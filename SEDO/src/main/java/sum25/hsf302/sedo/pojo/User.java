@@ -34,6 +34,9 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt = LocalDate.now();
     private LocalDate updatedAt = LocalDate.now();
@@ -101,6 +104,14 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public LocalDate getCreatedAt() {

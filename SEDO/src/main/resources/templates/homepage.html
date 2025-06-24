@@ -8,21 +8,8 @@
 </head>
 <body>
 <!-- Navigation Bar -->
-<nav class="navbar">
-    <div class="logo">PC Parts Shop</div>
-    <ul class="nav-links">
-        <li><a th:href="@{/}">Home</a></li>
-        <li><a th:href="@{/categories}">Categories</a></li>
-        <li><a th:href="@{/pc-builder}">PC Builder</a></li>
-        <li><a th:href="@{/cart}">Cart</a></li>
-        <li th:if="${session.user != null}">
-            <a th:href="@{/logout}" class="btn">Logout</a>
-        </li>
-        <li th:if="${session.user == null}">
-            <a th:href="@{/login}" class="btn">Login</a>
-        </li>
-    </ul>
-</nav>
+<!-- Replace the existing nav element with this -->
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 <!-- Hero Section -->
 <section class="hero">
