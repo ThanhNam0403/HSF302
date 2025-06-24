@@ -10,20 +10,19 @@ import java.time.LocalDate;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @Column(name = "create_at", nullable = false)
+
     private LocalDate createdAt = LocalDate.now();
     private LocalDate updatedAt = LocalDate.now();
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
-
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

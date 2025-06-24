@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Customer Dashboard - SEDO</title>
+        <link rel="stylesheet" th:href="@{/style.css}">
+        <link rel="stylesheet" th:href="@{/dashboard.css}">
+    </head>
+    <body class="dashboard-body">
+        <nav class="dashboard-nav">
+            <div class="nav-brand">SEDO Customer</div>
+            <div class="nav-user">
+                <span th:text="${user.fullName}"></span>
+                <form th:action="@{/logout}" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </nav>
+
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <span th:text="${#strings.substring(user.fullName,0,1)}"></span>
+                    </div>
+                    <div class="user-details">
+                        <h3 th:text="${user.fullName}"></h3>
+                        <p th:text="${user.email}"></p>
+                        <span class="role-badge customer" th:text="${user.role.roleName}"></span>
+                    </div>
+                </div>
+                <ul class="nav-menu">
+                    <li class="active"><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                </ul>
+            </div>
+
+            <main class="content">
+                <h1>Welcome to Customer Dashboard</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Orders</h3>
+                        <p class="stat-number">12</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Orders</h3>
+                        <p class="stat-number">3</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Completed Orders</h3>
+                        <p class="stat-number">9</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+    </html>

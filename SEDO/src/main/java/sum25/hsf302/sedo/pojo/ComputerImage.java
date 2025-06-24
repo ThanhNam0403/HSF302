@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class ComputerImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "computer_id", nullable = false)
@@ -18,11 +18,10 @@ public class ComputerImage {
     @Column(name = "is_primary", nullable = false)
     private Boolean isPrimary = false;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
-
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

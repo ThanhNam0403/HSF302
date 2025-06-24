@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Parts & Builder</title>
+    <link rel="stylesheet" th:href="@{/homepage.css}">
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="logo">PC Parts Shop</div>
+    <ul class="nav-links">
+        <li><a th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/categories}">Categories</a></li>
+        <li><a th:href="@{/pc-builder}">PC Builder</a></li>
+        <li><a th:href="@{/cart}">Cart</a></li>
+        <li th:if="${session.user != null}">
+            <a th:href="@{/logout}" class="btn">Logout</a>
+        </li>
+        <li th:if="${session.user == null}">
+            <a th:href="@{/login}" class="btn">Login</a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <h1>Build Your Dream PC Today</h1>
+    <p>Explore top-quality computer parts and customize your perfect setup.</p>
+    <a th:href="@{/pc-builder}" class="btn hero-btn">Start Building Now</a>
+</section>
+
+<!-- Categories Section -->
+<section class="categories">
+    <h2>Shop by Category</h2>
+    <div class="category-grid">
+        <div th:each="category : ${categories}" class="category-card">
+            <h3 th:text="${category.name}"></h3>
+            <p th:text="${category.description}"></p>
+            <a th:href="@{/categories/{id}(id=${category.id})}" class="btn">Explore</a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured-products">
+    <h2>Featured Products</h2>
+    <div class="product-grid">
+        <div th:each="product : ${featuredProducts}" class="product-card">
+            <img th:src="@{${product.computerImages[0]?.imageUrl ?: '/images/placeholder.jpg'}}" alt="Product Image">
+            <h3 th:text="${product.name}"></h3>
+            <p th:text="${product.brand} + ' ' + ${product.model}"></p>
+            <p class="price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></p>
+            <a th:href="@{/products/{id}(id=${product.id})}" class="btn">View Details</a>
+        </div>
+    </div>
+</section>
+
+<!-- PC Builder Section -->
+<section class="pc-builder">
+    <h2>Customize Your PC</h2>
+    <p>Choose your components and build a PC tailored to your needs.</p>
+    <a th:href="@{/pc-builder}" class="btn">Start Building</a>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 PC Parts Shop. All rights reserved.</p>
+</footer>
+</body>
+</html>
