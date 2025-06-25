@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -228,37 +229,61 @@ public class HomeController {
     @PostMapping("/profile/upload-image")
     @ResponseBody
     public Map<String, Object> uploadProfileImage(@RequestParam("image") MultipartFile file,
-                                                  HttpSession session) {
+                                                HttpSession session) {
         User user = (User) session.getAttribute("user");
         Map<String, Object> response = new HashMap<>();
 
         if (user == null) {
             response.put("success", false);
+            response.put("error", "User not logged in");
+            return response;
+        }
+
+        if (file.isEmpty()) {
+            response.put("success", false);
+            response.put("error", "No file uploaded");
             return response;
         }
 
         try {
-            String fileName = user.getId() + "_" + System.currentTimeMillis() +
-                             "_" + file.getOriginalFilename();
-            String uploadDir = new File("uploads/profiles").getAbsolutePath();
+            // Create unique filename
+            String fileName = user.getId() + "_" + System.currentTimeMillis() + "_" +
+                            file.getOriginalFilename().replaceAll("\\s+", "_");
+
+            // Get the absolute path to resources directory
+            String resourcePath = new File("SEDO/src/main/resources/static").getAbsolutePath();
+            String uploadDir = resourcePath + "/uploads/profiles/";
             Path uploadPath = Paths.get(uploadDir);
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
+            // Create directories if they don't exist
+            Files.createDirectories(uploadPath);
 
+            // Save the file
             try (InputStream inputStream = file.getInputStream()) {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 
-                user.setProfileImage("/uploads/profiles/" + fileName);
+                // Set relative path for database storage
+                String imagePath = "/uploads/profiles/" + fileName;
+
+                // Delete old profile image if exists
+                if (user.getProfileImage() != null) {
+                    String oldFileName = user.getProfileImage().substring(user.getProfileImage().lastIndexOf("/") + 1);
+                    Path oldFilePath = uploadPath.resolve(oldFileName);
+                    Files.deleteIfExists(oldFilePath);
+                }
+
+                user.setProfileImage(imagePath);
                 userService.save(user);
                 session.setAttribute("user", user);
 
                 response.put("success", true);
+                response.put("imagePath", imagePath);
             }
         } catch (IOException e) {
+            e.printStackTrace();
             response.put("success", false);
+            response.put("error", "Failed to upload image: " + e.getMessage());
         }
 
         return response;

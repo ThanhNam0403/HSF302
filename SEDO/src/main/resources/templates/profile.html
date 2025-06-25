@@ -13,7 +13,11 @@
         <div class="profile-container">
             <div class="profile-header">
                 <div class="profile-avatar-container">
-                    <img th:if="${user.profileImage}" th:src="${user.profileImage}" alt="Profile" class="profile-avatar">
+                    <img th:if="${user.profileImage}"
+                         th:src="@{${user.profileImage}}"
+                         alt="Profile"
+                         class="profile-avatar"
+                         onerror="this.onerror=null; this.src='/images/default-avatar.png';">
                     <div th:unless="${user.profileImage}" class="default-avatar">
                         <span th:text="${#strings.substring(user.fullName,0,1)}"></span>
                     </div>
