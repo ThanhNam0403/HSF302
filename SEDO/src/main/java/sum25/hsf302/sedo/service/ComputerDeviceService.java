@@ -1,5 +1,7 @@
 package sum25.hsf302.sedo.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import sum25.hsf302.sedo.pojo.ComputerDevice;
 import java.util.List;
 
@@ -14,4 +16,5 @@ public interface ComputerDeviceService {
     List<ComputerDevice> searchProducts(String keyword);
     List<ComputerDevice> findByBrand(String brand);
     boolean updateStock(Long id, int quantity);
+    Page<ComputerDevice> findFeaturedProductsPaginated(Pageable pageable);
 }

@@ -1,6 +1,8 @@
 package sum25.hsf302.sedo.pojo;
 
 import jakarta.persistence.*;
+import sum25.hsf302.sedo.file_enum.OrderStatus;
+import sum25.hsf302.sedo.file_enum.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,10 +25,12 @@ public class Order {
     private BigDecimal totalAmount;
     @Column(name = "shipping_address", nullable = false)
     private String shippingAddress;
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod = PaymentMethod.COD;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status = "Pending";
+    private OrderStatus status = OrderStatus.CONFIRM;
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt = LocalDate.now();
     private LocalDate updatedAt = LocalDate.now();
@@ -70,19 +74,17 @@ public class Order {
         this.shippingAddress = shippingAddress;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
-
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
-
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

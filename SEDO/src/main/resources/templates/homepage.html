@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PC Parts & Builder</title>
+    <link rel="stylesheet" th:href="@{/taskbar.css}">
     <link rel="stylesheet" th:href="@{/homepage.css}">
 </head>
 <body>
 <!-- Navigation Bar -->
-<!-- Replace the existing nav element with this -->
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 <!-- Hero Section -->
@@ -35,7 +35,7 @@
     <h2>Featured Products</h2>
     <div class="product-grid">
         <div th:each="product : ${featuredProducts}" class="product-card">
-            <img th:src="@{${product.computerImages[0]?.imageUrl ?: '/images/placeholder.jpg'}}" alt="Product Image">
+            <img th:src="@{'/uploads/ComputerDevices/' + ${product.computerImages[0].imageUrl}}" />
             <h3 th:text="${product.name}"></h3>
             <p th:text="${product.brand} + ' ' + ${product.model}"></p>
             <p class="price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></p>
@@ -43,6 +43,7 @@
         </div>
     </div>
 </section>
+
 
 <!-- PC Builder Section -->
 <section class="pc-builder">

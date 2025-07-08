@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+  <link rel="stylesheet" th:href="@{/order.css}" />
+    <link rel="stylesheet" th:href="@{/taskbar.css}" />
+</head>
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container">
+  <h1>Thank you for your order!</h1>
+  <p>Your order ID: <strong th:text="${order.id}"></strong></p>
+  <p>Total amount: <strong th:text="'$' + ${order.totalAmount}"></strong></p>
+
+  <h2>Order Details</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Product</th>
+      <th>Variant</th>
+      <th>Quantity</th>
+      <th>Unit Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="detail : ${orderDetails}">
+      <td th:text="${detail.computer.name}">Product</td>
+      <td th:text="${detail.variant?.name}">Variant</td>
+      <td th:text="${detail.quantity}">1</td>
+      <td th:text="'$' + ${detail.unitPrice}">$0.00</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a th:href="@{/SEDO}" class="btn">Continue Shopping</a>
+</div>
+</body>
+</html>

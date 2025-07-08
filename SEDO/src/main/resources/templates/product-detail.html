@@ -1,0 +1,32 @@
+<!-- product-detail.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${product.name}">Product Details</title>
+    <link rel="stylesheet" th:href="@{/taskbar.css}">
+    <link rel="stylesheet" th:href="@{/computer.css}">
+</head>
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container">
+    <h1 th:text="${product.name}"></h1>
+    <img th:src="${#lists.isEmpty(product.computerImages) ?
+              '/images/placeholder.jpg' :
+              '/uploads/ComputerDevices/' + product.computerImages[0].imageUrl}"
+         th:alt="${product.name}"
+         width="300" />
+    <p th:text="'Brand: ' + ${product.brand}"></p>
+    <p th:text="'Model: ' + ${product.model}"></p>
+    <p th:text="'Specifications: ' + ${product.specifications}"></p>
+    <p th:text="'Price: $' + ${product.price}"></p>
+    <p th:text="'Stock: ' + ${product.stockQuantity} + ' units'"></p>
+    <form th:action="@{/cart/add}" method="post">
+        <input type="hidden" name="productId" th:value="${product.id}" />
+        <input type="number" name="quantity" value="1" min="1" max="99" />
+        <button type="submit" class="btn">Add to Cart</button>
+    </form>
+
+</div>
+</body>
+</html>

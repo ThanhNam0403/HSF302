@@ -9,4 +9,5 @@ public interface UserService {
     User findByEmail(String email);
     User save(User user);
     long count();
+    User findByUsername(String username);
 }

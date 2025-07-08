@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -25,6 +26,13 @@ public class ComputerDevice {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "computer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ComputerImage> computerImages;
+
+    @OneToMany(mappedBy = "computer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ComputerVariant> computerVariants;
+
 
     @Column(name = "brand", nullable = false)
     private String brand;
@@ -75,6 +83,19 @@ public class ComputerDevice {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public List<ComputerImage> getComputerImages() {
+        return computerImages;
+    }
+    public void setComputerImages(List<ComputerImage> computerImages) {
+        this.computerImages = computerImages;
+    }
+    public List<ComputerVariant> getComputerVariants() {
+        return computerVariants;
+    }
+    public void setComputerVariants(List<ComputerVariant> computerVariants) {
+        this.computerVariants = computerVariants;
     }
 
     public Category getCategory() {

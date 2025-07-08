@@ -73,4 +73,9 @@ public class UserServiceImpl implements UserService {
     public long count() {
         return userRepository.count();
     }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
 }

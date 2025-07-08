@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,14 +52,21 @@ public class HomeController {
     private RoleService roleService;
 
     @GetMapping("/SEDO")
-    public String homePage(Model model) {
+    public String homePage(@RequestParam(defaultValue = "0") int page,
+                           Model model) {
+        int pageSize = 10;
+
+        Page<ComputerDevice> featuredPage = computerDeviceService.findFeaturedProductsPaginated(PageRequest.of(page, pageSize));
         List<Category> categories = categoryService.findAll();
-        List<ComputerDevice> featuredProducts = computerDeviceService.findFeaturedProducts();
 
         model.addAttribute("categories", categories);
-        model.addAttribute("featuredProducts", featuredProducts);
+        model.addAttribute("featuredProducts", featuredPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", featuredPage.getTotalPages());
+
         return "homepage";
     }
+
 
 
     @GetMapping("/login")
@@ -123,6 +132,12 @@ public class HomeController {
         // Check if email already exists
         if (userService.findByEmail(email) != null) {
             redirectAttributes.addFlashAttribute("error", "Email already registered");
+            return "redirect:/register";
+        }
+
+        // Check if username already exists
+        if (userService.findByUsername(username) != null) {
+            redirectAttributes.addFlashAttribute("error", "Username already taken");
             return "redirect:/register";
         }
 

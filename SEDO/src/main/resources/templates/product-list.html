@@ -1,0 +1,33 @@
+<!-- product-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Product Results</title>
+    <link rel="stylesheet" th:href="@{/taskbar.css}">
+    <link rel="stylesheet" th:href="@{/product.css}">
+</head>
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container">
+    <h2 th:if="${keyword}" th:text="'Search results for: ' + ${keyword}"></h2>
+    <h2 th:if="${category}" th:text="'Category: ' + ${category.name}"></h2>
+    <h2 th:if="${brand}" th:text="'Brand: ' + ${brand}"></h2>
+
+    <div class="product-grid">
+        <div class="product-card" th:each="product : ${products}">
+            <img th:src="${#lists.isEmpty(product.computerImages) ?
+              '/images/placeholder.jpg' :
+              '/uploads/ComputerDevices/' + product.computerImages[0].imageUrl}"
+                 th:alt="${product.name}"
+                 class="product-detail-img" />
+                 th:alt="${product.name}" class="product-img"/>
+            <h3 th:text="${product.name}"></h3>
+            <p th:text="${product.brand} + ' ' + ${product.model}"></p>
+            <p th:text="'$' + ${product.price}"></p>
+            <a th:href="@{/products/{id}(id=${product.id})}" class="btn">View Details</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

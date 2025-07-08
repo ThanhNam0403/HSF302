@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" th:href="@{/order.css}">
+    <link rel="stylesheet" th:href="@{/taskbar.css}">
+
+</head>
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container">
+    <h2>Confirm Your Order</h2>
+
+    <form th:action="@{/orders/confirm}" method="post">
+        <h3>Shipping Address</h3>
+        <p th:text="${shippingAddress}">123 Sample St</p>
+
+        <h3>Items</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>Variant</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cartItems}">
+                <td th:text="${item.computer.name}">Product Name</td>
+                <td th:text="${item.variant?.name}">Variant</td>
+                <td th:text="${item.quantity}">1</td>
+                <td th:text="'$' + ${item.priceAtAddToCart}">$0.00</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <p>Subtotal: <span th:text="'$' + ${cartSubtotal}">$0.00</span></p>
+            <p>Tax: <span th:text="'$' + ${taxAmount}">$0.00</span></p>
+            <p>Shipping: <span th:text="${shippingCost.compareTo(T(java.math.BigDecimal).ZERO) == 0 ? 'Free' : '$' + shippingCost}">Free</span></p>
+            <h4>Total: <span th:text="'$' + ${cartTotal}">$0.00</span></h4>
+        </div>
+
+        <button type="submit">Place Order</button>
+    </form>
+</div>
+</body>
+</html>
