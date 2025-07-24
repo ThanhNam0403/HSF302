@@ -1,6 +1,8 @@
 package sum25.hsf302.sedo.pojo;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "computer_devices")
+@Getter
+@Setter
 public class ComputerDevice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +20,7 @@ public class ComputerDevice {
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", columnDefinition = "nvarchar(100)", nullable = false)
     private String description;
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -33,12 +37,24 @@ public class ComputerDevice {
     @OneToMany(mappedBy = "computer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ComputerVariant> computerVariants;
 
+    @Column(name = "cpu_model")
+    private String cpuModel;
 
+    @Column(name = "mainboard_chipset")
+    private String mainboardChipset;
+
+    @Column(name = "wattage")
+    private Integer wattage;// Áp dụng cho PSU
+
+    @Column(name = "ram")
+    private Integer ram;    // Áp dụng cho RAM/SSD
+    @Column(name = "type")
+    private String type;     // DDR4/DDR5, SSD/HDD, etc.
     @Column(name = "brand", nullable = false)
     private String brand;
     @Column(name = "model", nullable = false)
     private String model;
-    @Column(name = "specifications", nullable = false)
+    @Column(name = "specifications", nullable = false, columnDefinition = "nvarchar(100)")
     private String specifications;
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
@@ -46,111 +62,7 @@ public class ComputerDevice {
     private LocalDate createdAt = LocalDate.now();
     private LocalDate updatedAt = LocalDate.now();
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public int getStockQuantity() {
-        return stockQuantity;
-    }
-
-    public void setStockQuantity(int stockQuantity) {
-        this.stockQuantity = stockQuantity;
-    }
-
-    public List<ComputerImage> getComputerImages() {
-        return computerImages;
-    }
-    public void setComputerImages(List<ComputerImage> computerImages) {
-        this.computerImages = computerImages;
-    }
-    public List<ComputerVariant> getComputerVariants() {
-        return computerVariants;
-    }
-    public void setComputerVariants(List<ComputerVariant> computerVariants) {
-        this.computerVariants = computerVariants;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getSpecifications() {
-        return specifications;
-    }
-
-    public void setSpecifications(String specifications) {
-        this.specifications = specifications;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

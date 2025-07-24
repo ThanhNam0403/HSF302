@@ -162,14 +162,29 @@ body {
     fill: currentColor;
 }
 
-.alert-error {
-    background: #fee2e2;
-    color: #dc2626;
+
+.error-msg {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 4px;
 }
 
 .alert-success {
-    background: #dcfce7;
-    color: #16a34a;
+    background-color: #e6ffed;
+    border: 1px solid #28a745;
+    padding: 10px;
+    margin-bottom: 15px;
+    color: #155724;
+    border-radius: 4px;
+}
+
+.alert-error {
+    background-color: #ffe6e6;
+    border: 1px solid #dc3545;
+    padding: 10px;
+    margin-bottom: 15px;
+    color: #721c24;
+    border-radius: 4px;
 }
 
 @media (max-width: 480px) {

@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Order Confirmation</title>
-  <link rel="stylesheet" th:href="@{/order.css}" />
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" th:href="@{/order_confirm.css}"/>
     <link rel="stylesheet" th:href="@{/taskbar.css}" />
 </head>
 <body>
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
 <div class="container">
-  <h1>Thank you for your order!</h1>
-  <p>Your order ID: <strong th:text="${order.id}"></strong></p>
-  <p>Total amount: <strong th:text="'$' + ${order.totalAmount}"></strong></p>
+    <h1>Cảm ơn bạn đã đặt hàng!</h1>
+    <p>ID đơn hàng của bạn: <strong th:text="${order.id}"></strong></p>
+    <p>Tổng số tiền: <strong th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong></p>
 
-  <h2>Order Details</h2>
-  <table>
-    <thead>
-    <tr>
-      <th>Product</th>
-      <th>Variant</th>
-      <th>Quantity</th>
-      <th>Unit Price</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="detail : ${orderDetails}">
-      <td th:text="${detail.computer.name}">Product</td>
-      <td th:text="${detail.variant?.name}">Variant</td>
-      <td th:text="${detail.quantity}">1</td>
-      <td th:text="'$' + ${detail.unitPrice}">$0.00</td>
-    </tr>
-    </tbody>
-  </table>
+    <h2>Chi tiết đơn hàng</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="detail : ${orderDetails}">
+            <td th:text="${detail.computer.name}">Sản phẩm</td>
+            <td th:text="${detail.quantity}">1</td>
+            <td th:text="${#numbers.formatDecimal(detail.unitPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0.00 VNĐ</td>
+        </tr>
+        </tbody>
+    </table>
 
-  <a th:href="@{/SEDO}" class="btn">Continue Shopping</a>
+    <a th:href="@{/SEDO}" class="btn"><- Tiếp tục mua sắm</a>
 </div>
 </body>
 </html>

@@ -14,7 +14,7 @@ public class ComputerVariant {
     @ManyToOne
     @JoinColumn(name = "computer_id", nullable = false)
     private ComputerDevice computer;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false,columnDefinition = "nvarchar(100)")
     private String name;
     @Column(name = "value", nullable = false)
     private String value;

@@ -1,11 +1,15 @@
 package sum25.hsf302.sedo.pojo;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cart_details")
+@Getter
+@Setter
 public class CartDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,52 +33,17 @@ public class CartDetail {
     @Column(name = "price_at_add_to_cart", nullable = false)
     private BigDecimal priceAtAddToCart;
 
+    @Column(name = "type")
+    private String type;
+
+    // 👇 Đây là getter bổ sung để Thymeleaf dùng được
 
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Cart getCart() {
-        return cart;
-    }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    public ComputerDevice getComputer() {
-        return computer;
-    }
-
-    public void setComputer(ComputerDevice computer) {
-        this.computer = computer;
-    }
-
-    public ComputerVariant getVariant() {
-        return variant;
-    }
-
-    public void setVariant(ComputerVariant variant) {
-        this.variant = variant;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getPriceAtAddToCart() {
-        return priceAtAddToCart;
-    }
-
-    public void setPriceAtAddToCart(BigDecimal priceAtAddToCart) {
-        this.priceAtAddToCart = priceAtAddToCart;
+    @Transient
+    public BigDecimal getTotalPrice() {
+        System.out.println("getTotalPrice() called for cart item id: " + this.id);
+        return priceAtAddToCart.multiply(BigDecimal.valueOf(quantity));
     }
 }

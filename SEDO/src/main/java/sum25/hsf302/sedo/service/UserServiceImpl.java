@@ -1,6 +1,8 @@
 package sum25.hsf302.sedo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sum25.hsf302.sedo.pojo.User;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +16,48 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private HttpSession session;
+
+    @Override
+    public Page<User> searchByFullName(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return userRepository.findAll(pageable);
+        }
+        String searchKeyword = "%" + keyword.trim() + "%";
+        return userRepository.findByFullNameLike(searchKeyword, pageable);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public User update(User user) {
+        User existingUser = userRepository.findById(user.getId()).orElse(null);
+        if (existingUser != null) {
+            existingUser.setEmail(user.getEmail());
+            existingUser.setFullName(user.getFullName());
+            existingUser.setActive(user.getActive());
+            existingUser.setRole(user.getRole());
+            return userRepository.save(existingUser);
+        }
+        return null; // or throw an exception if user not found
+    }
+
+    @Override
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public int countActiveUsers() {
+        return userRepository.countByIsActiveTrue();
+    }
 
     @Override
     public User validateUser(String email, String password) {
@@ -37,7 +81,6 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
-
 
 
     @Override

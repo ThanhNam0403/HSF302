@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sum25.hsf302.sedo.file_enum.OrderStatus;
+import sum25.hsf302.sedo.file_enum.PaymentMethod;
 import sum25.hsf302.sedo.pojo.*;
 import sum25.hsf302.sedo.service.CartDetailService;
 import sum25.hsf302.sedo.service.CartService;
@@ -13,6 +16,8 @@ import sum25.hsf302.sedo.service.OrderService;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +51,7 @@ public class OrderController {
 
     @PostMapping("/status/{id}")
     public String updateOrderStatus(@PathVariable Long id) {
-        orderService.updateOrderStatus(id);
+        orderService.updateOrderStatusById(id);
         return "redirect:/admin";
     }
 
@@ -140,6 +145,74 @@ public class OrderController {
         return response;
     }
 
+    @PostMapping("/confirm-order")
+    public String confirmSelectedOrder(@RequestParam("selectedItemIds") String itemIdsStr,
+                                       HttpSession session, RedirectAttributes redirectAttributes) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || itemIdsStr == null || itemIdsStr.isBlank()) return "redirect:/login";
 
+        List<Long> selectedIds = Arrays.stream(itemIdsStr.split(","))
+                .map(String::trim).filter(s -> !s.isEmpty())
+                .map(Long::parseLong).toList();
+
+        List<CartDetail> selectedItems = cartDetailService.getCartDetailsByIds(selectedIds);
+        if (selectedItems.isEmpty()) return "redirect:/cart";
+
+        BigDecimal totalAmount = selectedItems.stream()
+                .map(CartDetail::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Order order = new Order();
+        order.setCustomer(user);
+        order.setOrderDate(LocalDate.now());
+        order.setTotalAmount(totalAmount);
+        order.setStatus(OrderStatus.PENDING);
+        order.setPaymentMethod(PaymentMethod.COD);
+        orderService.createOrder(order);
+
+        for (CartDetail cd : selectedItems) {
+            OrderDetail detail = new OrderDetail();
+            detail.setOrder(order);
+            detail.setComputer(cd.getComputer());
+            detail.setQuantity(cd.getQuantity());
+            detail.setUnitPrice(cd.getPriceAtAddToCart());
+            orderDetailService.save(detail);
+        }
+
+        cartDetailService.removeCartDetailsByIds(selectedIds, user);
+        redirectAttributes.addFlashAttribute("order", order);
+        return "redirect:/order-success";
+    }
+
+    @GetMapping("/order-success")
+    public String showOrderSuccessPage() {
+        return "order-confirmation";
+    }
+
+    @GetMapping("/history")
+    public String viewOrderHistory(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        List<Order> orders = orderService.getOrdersByCustomerId(user.getId());
+        model.addAttribute("orders", orders);
+        return "order-history";
+    }
+
+    @GetMapping("/details/{orderId}")
+    public String viewOrderDetails(@PathVariable Long orderId, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        Order order = orderService.getOrderById(orderId);
+        if (order == null || !order.getCustomer().getId().equals(user.getId())) {
+            return "redirect:/orders/history";
+        }
+
+        List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderId);
+        model.addAttribute("order", order);
+        model.addAttribute("orderDetails", orderDetails);
+        return "order-detail";
+    }
 
 }

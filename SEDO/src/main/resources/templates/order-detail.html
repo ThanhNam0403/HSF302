@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng</title>
+    <link rel="stylesheet" th:href="@{/orderdetail.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <section class="order-details">
+        <h2>🧾 Chi tiết đơn hàng</h2>
+
+        <div class="order-summary">
+            <p><strong>Mã đơn:</strong> <span th:text="${order.id}"></span></p>
+            <p><strong>Ngày đặt:</strong> <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></span></p>
+            <p><strong>Trạng thái:</strong> <span th:text="${order.status}"></span></p>
+            <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span></p>
+        </div>
+
+        <h3>Sản phẩm</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${orderDetails}">
+                <td th:text="${item.getComputer().getName()}"></td>
+                <td th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+            </tr>
+            </tbody>
+
+        </table>
+
+        <div class="back">
+            <a th:href="@{/orders/history}" class="btn">
+                <i class="fa-solid fa-arrow-left"></i><-Quay lại lịch sử đơn hàng
+            </a>
+        </div>
+    </section>
+</div>
+</body>
+</html>

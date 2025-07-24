@@ -1,114 +1,118 @@
 <!DOCTYPE html>
-                       <html lang="en" xmlns:th="http://www.thymeleaf.org">
-                       <head>
-                           <meta charset="UTF-8">
-                           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                           <title>Login - SEDO</title>
-                           <link rel="stylesheet" th:href="@{/style.css}">
-                           <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-                           <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-                       </head>
-                       <body>
-                           <div class="login-wrapper">
-                               <div class="login-container">
-                                   <div class="login-header">
-                                       <div class="logo">
-                                           <i class="fas fa-cube"></i>
-                                       </div>
-                                       <h1>Welcome to SEDO</h1>
-                                       <p>Please login to continue</p>
-                                   </div>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - SEDO</title>
+    <link rel="stylesheet" th:href="@{/register.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+            </div>
+            <h1>Chào mừng đến với SEDO</h1>
+            <p>Vui lòng đăng nhập để tiếp tục</p>
+        </div>
 
-                                   <form th:action="@{/login}" method="post" class="login-form">
-                                       <div th:if="${param.error}" class="alert alert-error">
-                                           <i class="fas fa-exclamation-circle"></i>
-                                           Invalid email or password
-                                       </div>
-                                       <div th:if="${param.logout}" class="alert alert-success">
-                                           <i class="fas fa-check-circle"></i>
-                                           You have been logged out successfully
-                                       </div>
+        <form th:action="@{/login}" method="post" class="login-form">
+            <div th:if="${error}" class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}"></span>
+            </div>
 
-                                       <div class="form-group">
-                                           <label for="email">
-                                               <i class="fas fa-envelope"></i>
-                                               Email
-                                           </label>
-                                           <div class="input-wrapper">
-                                               <input type="email"
-                                                      id="email"
-                                                      name="email"
-                                                      th:value="${rememberedEmail}"
-                                                      placeholder="Enter your email"
-                                                      required>
-                                           </div>
-                                       </div>
+            <div th:if="${param.logout}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                Bạn đã đăng xuất thành công!
+            </div>
 
-                                       <div class="form-group">
-                                           <label for="password">
-                                               <i class="fas fa-lock"></i>
-                                               Password
-                                           </label>
-                                           <div class="input-wrapper">
-                                               <input type="password"
-                                                      id="password"
-                                                      name="password"
-                                                      placeholder="Enter your password"
-                                                      required
-                                                      oninput="toggleEyeIcon(this)">
-                                               <i class="fas fa-eye toggle-password" onclick="togglePassword()" style="display: none;"></i>
-                                           </div>
-                                       </div>
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i>
+                    Email
+                </label>
+                <div class="input-wrapper">
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           th:value="${rememberedEmail}"
+                           placeholder="Enter your email"
+                           required
+                           pattern="^[A-Za-z0-9+_.-]+@(.+)$"
+                           title="Email không hợp lệ">
 
-                                       <div class="form-options">
-                                           <label class="remember-me">
-                                               <input type="checkbox"
-                                                      id="remember"
-                                                      name="remember"
-                                                      th:checked="${rememberedEmail != null}">
-                                               <span class="checkmark"></span>
-                                               Remember me
-                                           </label>
-                                           <a href="/forgot-password" class="forgot-link">Forgot Password?</a>
-                                       </div>
+                </div>
+            </div>
 
-                                       <button type="submit" class="login-btn">
-                                           <i class="fas fa-sign-in-alt"></i>
-                                           Sign In
-                                       </button>
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i>
+                    Mật Khẩu
+                </label>
+                <div class="input-wrapper">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           placeholder="Enter your password"
+                           required
+                           oninput="toggleEyeIcon(this)">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword()" style="display: none;"></i>
+                </div>
+            </div>
 
-                                       <!-- Add this after the login form, but before the closing login-container div -->
-                                       <div class="register-section">
-                                           <p>Don't have an account? <a th:href="@{/register}" class="register-link">Register now</a></p>
-                                       </div>
-                                   </form>
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox"
+                           id="remember"
+                           name="remember"
+                           th:checked="${rememberedEmail != null}">
+                    <span class="checkmark"></span>
+                    Nhớ tôi nhé
+                </label>
+                <a href="/forgot-password" class="forgot-link">Quên mật khẩu?</a>
+            </div>
 
-                               </div>
-                           </div>
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                Đăng nhập
+            </button>
 
-                           <script>
-                               function togglePassword() {
-                                   const passwordInput = document.getElementById("password");
-                                   const toggleIcon = document.querySelector(".toggle-password");
-                                   const isPassword = passwordInput.getAttribute("type") === "password";
+            <!-- Add this after the login form, but before the closing login-container div -->
+            <div class="register-section">
+                <p>Bạn chưa có tài khoản?<a th:href="@{/register}" class="register-link">Đăng ký ngay!</a></p>
+            </div>
+        </form>
 
-                                   passwordInput.setAttribute("type", isPassword ? "text" : "password");
-                                   toggleIcon.classList.toggle("fa-eye");
-                                   toggleIcon.classList.toggle("fa-eye-slash");
-                               }
+    </div>
+</div>
 
-                               function toggleEyeIcon(input) {
-                                   const toggleIcon = document.querySelector(".toggle-password");
-                                   if (input.value.length > 0) {
-                                       toggleIcon.style.display = "block";
-                                   } else {
-                                       toggleIcon.style.display = "none";
-                                       input.setAttribute("type", "password");
-                                       toggleIcon.classList.remove("fa-eye-slash");
-                                       toggleIcon.classList.add("fa-eye");
-                                   }
-                               }
-                           </script>
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const toggleIcon = document.querySelector(".toggle-password");
+        const isPassword = passwordInput.getAttribute("type") === "password";
 
-                       </body>
-                       </html>
+        passwordInput.setAttribute("type", isPassword ? "text" : "password");
+        toggleIcon.classList.toggle("fa-eye");
+        toggleIcon.classList.toggle("fa-eye-slash");
+    }
+
+    function toggleEyeIcon(input) {
+        const toggleIcon = document.querySelector(".toggle-password");
+        if (input.value.length > 0) {
+            toggleIcon.style.display = "block";
+        } else {
+            toggleIcon.style.display = "none";
+            input.setAttribute("type", "password");
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
+    }
+</script>
+
+</body>
+</html>

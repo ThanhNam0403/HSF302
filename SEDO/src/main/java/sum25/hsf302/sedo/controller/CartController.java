@@ -79,16 +79,35 @@
         public Map<String, Object> removeCartItem(@RequestBody Map<String, Object> payload, HttpSession session) {
             Map<String, Object> response = new HashMap<>();
             User user = (User) session.getAttribute("user");
+
             if (user == null) {
                 response.put("success", false);
                 response.put("message", "Not logged in");
                 return response;
             }
-            Long itemId = Long.valueOf(payload.get("itemId").toString());
-            cartService.removeCartItem(user, itemId);
+
+            String type = (String) payload.get("type");
+            Long itemId = payload.get("itemId") != null ? Long.valueOf(payload.get("itemId").toString()) : null;
+
+            if ("product".equals(type) || "pc-build".equals(type)) {
+                if (itemId != null) {
+                    cartService.removeProductFromCart(user, itemId);
+                } else {
+                    response.put("success", false);
+                    response.put("message", "Missing item ID");
+                    return response;
+                }
+            } else {
+                response.put("success", false);
+                response.put("message", "Unknown item type");
+                return response;
+            }
+
             response.put("success", true);
             return response;
         }
+
+
 
         @PostMapping("/clear")
         @ResponseBody
@@ -104,6 +123,8 @@
             response.put("success", true);
             return response;
         }
+
+
         @PostMapping("/add")
         public String addToCart(
                 @RequestParam("productId") Long productId,

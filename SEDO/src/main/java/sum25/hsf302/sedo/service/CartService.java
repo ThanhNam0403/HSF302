@@ -2,7 +2,10 @@
 package sum25.hsf302.sedo.service;
 
 import sum25.hsf302.sedo.pojo.Cart;
+import sum25.hsf302.sedo.pojo.PCBuild;
 import sum25.hsf302.sedo.pojo.User;
+
+import java.util.Optional;
 
 public interface CartService {
     void addToCart(User user, Long productId, int quantity);
@@ -11,4 +14,9 @@ public interface CartService {
     void clearCart(User user);
     Cart getOrCreateCart(User user);
     Cart getCartByUser(User user);
+    public void addBuildToCart(User user, PCBuild build);
+
+    public void removePcPart(User user, Long computerId);
+    public void removeProductFromCart(User user, Long itemId);
+
 }

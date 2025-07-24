@@ -1,26 +1,33 @@
 package sum25.hsf302.sedo.service;
 
-      import org.springframework.beans.factory.annotation.Autowired;
-      import org.springframework.stereotype.Service;
-      import sum25.hsf302.sedo.pojo.Role;
-      import sum25.hsf302.sedo.repository.RoleRepository;
-      import sum25.hsf302.sedo.service.RoleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sum25.hsf302.sedo.pojo.Role;
+import sum25.hsf302.sedo.repository.RoleRepository;
+import sum25.hsf302.sedo.service.RoleService;
 
-      @Service
-      public class RoleServiceImpl implements RoleService {
+import java.util.List;
 
-          @Autowired
-          private RoleRepository roleRepository;
+@Service
+public class RoleServiceImpl implements RoleService {
 
-          @Override
-          public Role save(Role role) {
-              return roleRepository.save(role);
-          }
+    @Autowired
+    private RoleRepository roleRepository;
 
-          @Override
-          public Role findById(Long id) {
-              return roleRepository.findById(id).orElse(null);
-          }
+    @Override
+    public List<Role> findAll() {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public Role save(Role role) {
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public Role findById(Long id) {
+        return roleRepository.findById(id).orElse(null);
+    }
 
 
-      }
+}

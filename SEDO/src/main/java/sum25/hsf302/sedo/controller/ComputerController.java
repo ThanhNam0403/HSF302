@@ -27,7 +27,7 @@ public class ComputerController {
     @GetMapping("/{id}")
     public String viewProductDetail(@PathVariable Long id, Model model) {
         ComputerDevice product = computerDeviceService.findById(id);
-        if (product == null || !product.getActive()) {
+        if (product == null || !product.getIsActive()) {
             return "404";
         }
         model.addAttribute("product", product);
@@ -54,7 +54,7 @@ public class ComputerController {
     @GetMapping("/category/{categoryId}")
     public String filterByCategory(@PathVariable("categoryId") Long categoryId, Model model) {
         List<ComputerDevice> products = computerDeviceService.findByCategory(categoryId);
-        model.addAttribute("products", products);
+        model.addAttribute("devices", products);
         model.addAttribute("category", categoryService.findById(categoryId)); // nếu muốn hiển thị tên danh mục
         return "product-list";
     }
@@ -63,8 +63,18 @@ public class ComputerController {
     @GetMapping("/brand")
     public String filterByBrand(@RequestParam("name") String brandName, Model model) {
         List<ComputerDevice> products = computerDeviceService.findByBrand(brandName);
-        model.addAttribute("products", products);
+        model.addAttribute("devices", products);
         model.addAttribute("brand", brandName);
         return "product-list";
     }
+
+    @GetMapping("/category-brand")
+    public String getDevicesByCategoryAndBrand(@RequestParam String category, @RequestParam String brand, Model model) {
+        List<ComputerDevice> devices = computerDeviceService.getDevicesByCategoryAndBrand(category, brand);
+        model.addAttribute("devices", devices);
+        model.addAttribute("category", category);
+        model.addAttribute("brand", brand);
+        return "product-list";
+    }
+
 }

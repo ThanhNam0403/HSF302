@@ -1,33 +1,49 @@
 package sum25.hsf302.sedo.pojo;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "username",unique = true)
+    @NotBlank(message = "Tên đăng nhập không được để trống")
+    @Size(min = 4, max = 20, message = "Tên đăng nhập phải từ 4 đến 20 ký tự")
+    @Column(nullable = false, name = "username", unique = true, columnDefinition = "nvarchar(100)")
     private String username;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không hợp lệ")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
+    private String password;
+
+    @NotBlank(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^(0[0-9]{9})$", message = "Số điện thoại không hợp lệ (ví dụ: 0123456789)")
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "full_name", nullable = false)
+    @NotBlank(message = "Họ tên không được để trống")
+    @Size(max = 100, message = "Họ tên không vượt quá 100 ký tự")
+    @Column(name = "full_name", nullable = false, columnDefinition = "nvarchar(100)")
     private String fullName;
 
-    @Column(name = "address", nullable = false)
+    @NotBlank(message = "Địa chỉ không được để trống")
+    @Size(max = 100, message = "Địa chỉ không vượt quá 100 ký tự")
+    @Column(name = "address", nullable = false, columnDefinition = "nvarchar(100)")
     private String address;
 
     @ManyToOne
@@ -39,96 +55,14 @@ public class User {
 
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt = LocalDate.now();
+
     private LocalDate updatedAt = LocalDate.now();
+
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    @OneToMany(mappedBy = "user")
+    private List<PCBuild> pcBuilds;
 
     public Boolean getActive() {
         return isActive;

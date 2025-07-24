@@ -1,32 +1,51 @@
-<!-- product-detail.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${product.name}">Product Details</title>
+    <title th:text="${product.name}">Chi tiết sản phẩm</title>
     <link rel="stylesheet" th:href="@{/taskbar.css}">
-    <link rel="stylesheet" th:href="@{/computer.css}">
+    <link rel="stylesheet" th:href="@{/product.css}">
 </head>
 <body>
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
-<div class="container">
-    <h1 th:text="${product.name}"></h1>
-    <img th:src="${#lists.isEmpty(product.computerImages) ?
-              '/images/placeholder.jpg' :
-              '/uploads/ComputerDevices/' + product.computerImages[0].imageUrl}"
-         th:alt="${product.name}"
-         width="300" />
-    <p th:text="'Brand: ' + ${product.brand}"></p>
-    <p th:text="'Model: ' + ${product.model}"></p>
-    <p th:text="'Specifications: ' + ${product.specifications}"></p>
-    <p th:text="'Price: $' + ${product.price}"></p>
-    <p th:text="'Stock: ' + ${product.stockQuantity} + ' units'"></p>
-    <form th:action="@{/cart/add}" method="post">
-        <input type="hidden" name="productId" th:value="${product.id}" />
-        <input type="number" name="quantity" value="1" min="1" max="99" />
-        <button type="submit" class="btn">Add to Cart</button>
-    </form>
-
+<div class="product-detail-container">
+    <div class="product-detail-card">
+        <!-- Cột ảnh -->
+        <div class="product-image-block">
+            <img class="product-detail-img"
+                 th:src="${#lists.isEmpty(product.computerImages) ? '/images/placeholder.jpg' : '/uploads/ComputerDevices/' + product.computerImages[0].imageUrl}"
+                 th:alt="${product.name}"/>
+        </div>
+        <!-- Cột thông tin -->
+        <div class="product-info-block">
+            <h1 class="product-title" th:text="${product.name}"></h1>
+            <div class="product-info-row">
+                <span class="label">Thương hiệu:</span>
+                <span th:text="${product.brand}"></span>
+            </div>
+            <div class="product-info-row">
+                <span class="label">Mã sản phẩm:</span>
+                <span th:text="${product.model}"></span>
+            </div>
+            <div class="product-info-row">
+                <span class="label">Thông số kỹ thuật:</span>
+                <span th:text="${product.specifications}"></span>
+            </div>
+            <div class="product-info-row">
+                <span class="label">Giá:</span>
+                <span class="price" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'POINT')} + ' VNĐ'"></span>
+            </div>
+            <div class="product-info-row">
+                <span class="label">Tồn kho:</span>
+                <span th:text="${product.stockQuantity} + ' sản phẩm'"></span>
+            </div>
+            <form th:action="@{/cart/add}" method="post" class="add-cart-form">
+                <input type="hidden" name="productId" th:value="${product.id}" />
+                <input class="quantity-input" type="number" name="quantity" value="1" min="1" th:attr="max=${product.stockQuantity}" />
+                <button type="submit" class="btn add-cart-btn">Thêm vào giỏ hàng</button>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

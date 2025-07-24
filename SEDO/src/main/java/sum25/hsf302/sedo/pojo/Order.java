@@ -23,7 +23,7 @@ public class Order {
     private LocalDate orderDate = LocalDate.now();
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
-    @Column(name = "shipping_address", nullable = false)
+    @Column(name = "shipping_address", nullable = false,columnDefinition = "nvarchar(100)")
     private String shippingAddress;
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)

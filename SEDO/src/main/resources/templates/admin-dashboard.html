@@ -1,58 +1,293 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard - SEDO</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
-    <link rel="stylesheet" th:href="@{/dashboard.css}">
+    <title>Bảng điều khiển Quản trị - SEDO</title>
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-dark: #283593;
+            --sidebar-bg: linear-gradient(135deg, #23235a 70%, #5e60ce 100%);
+            --sidebar-width: 225px;
+            --radius: 16px;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f8fc;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 38px;
+            box-shadow: 2px 0 18px rgba(44,44,80,0.04);
+        }
+        .sidebar h2 {
+            font-size: 28px;
+            margin: 0 0 46px 32px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            padding: 16px 36px;
+            font-size: 17px;
+            cursor: pointer;
+            border-radius: 8px 0 0 8px;
+            margin-bottom: 6px;
+            transition: background 0.22s, font-weight 0.18s;
+        }
+        .sidebar li.active, .sidebar li:hover {
+            background: #5e60ce;
+            font-weight: 600;
+            box-shadow: 2px 4px 16px 0 rgba(94,96,206,0.07);
+        }
+        .sidebar li a {
+            color: #fff;
+            text-decoration: none;
+            width: 100%;
+            display: block;
+            height: 100%;
+        }
+
+        .content {
+            flex: 1;
+            padding: 44px 54px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 38px;
+        }
+        .brand {
+            font-size: 33px;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+        }
+        .user-info {
+            font-size: 17px;
+        }
+        .logout-btn {
+            background: #fff;
+            border: 1px solid var(--primary-dark);
+            color: var(--primary-dark);
+            border-radius: 6px;
+            padding: 7px 18px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 10px;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #ecebfa;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 22px;
+            margin-bottom: 38px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 14px rgba(90,100,160,0.09);
+            padding: 26px 20px 18px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-height: 90px;
+        }
+        .stat-label {
+            font-size: 15px;
+            color: #595ba9;
+            margin-bottom: 7px;
+            font-weight: 500;
+        }
+        .stat-value {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #283593;
+        }
+        .orders-section {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 14px rgba(60,70,130,0.09);
+            padding: 30px 18px 18px 18px;
+            margin-top: 16px;
+            overflow-x: auto;
+        }
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .orders-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 0.2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 820px;
+        }
+        th, td {
+            padding: 14px 8px;
+            text-align: left;
+            font-size: 15.5px;
+        }
+        th {
+            color: #5866a6;
+            border-bottom: 2px solid #e4e7f5;
+            background: #f8faff;
+            font-weight: 700;
+        }
+        tr {
+            background: #fff;
+            transition: background 0.1s;
+        }
+        tr:hover {
+            background: #f4f7fd;
+        }
+        td.status-delivered {
+            color: #2ebc7c;
+            font-weight: 700;
+        }
+        td.status-processing {
+            color: #f39c12;
+            font-weight: 700;
+        }
+        td.status-cancelled, td.status-failed {
+            color: #e53935;
+            font-weight: 700;
+        }
+        .active-page {
+            font-weight: bold;
+            background: var(--primary) !important;
+            color: #fff !important;
+        }
+        /* Pagination styles */
+        .pagination {
+            margin-top: 18px;
+            text-align: center;
+        }
+        .pagination a {
+            margin: 0 4px;
+            padding: 6px 13px;
+            text-decoration: none;
+            border-radius: 5px;
+            color: var(--primary);
+            background: #f8faff;
+            transition: background 0.18s, color 0.14s;
+        }
+        .pagination a.active-page {
+            background: var(--primary) !important;
+            color: #fff !important;
+            font-weight: bold;
+        }
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr);}
+        }
+        @media (max-width: 800px) {
+            .stats-row { grid-template-columns: 1fr;}
+            .sidebar { display:none; }
+            .content { padding: 22px 8px; }
+        }
+    </style>
 </head>
-<body class="dashboard-body">
-    <nav class="dashboard-nav">
-        <div class="nav-brand">SEDO Admin</div>
-        <div class="nav-user">
-            <span th:text="${user.fullName}"></span>
-            <form th:action="@{/logout}" method="post" class="logout-form">
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
-        </div>
-    </nav>
-
-    <div class="dashboard-container">
-        <div class="sidebar">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <span th:text="${#strings.substring(user.fullName,0,1)}"></span>
-                </div>
-                <div class="user-details">
-                    <h3 th:text="${user.fullName}"></h3>
-                    <p th:text="${user.email}"></p>
-                    <span class="role-badge admin" th:text="${user.role.roleName}"></span>
-                </div>
-            </div>
-            <ul class="nav-menu">
-                <li class="active"><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-users"></i> Users</a></li>
-                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
-            </ul>
-        </div>
-
-        <main class="content">
-            <h1>Welcome to Admin Dashboard</h1>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Users</h3>
-                    <p class="stat-number">2,345</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Active Users</h3>
-                    <p class="stat-number">1,987</p>
-                </div>
-                <div class="stat-card">
-                    <h3>New Today</h3>
-                    <p class="stat-number">48</p>
-                </div>
-            </div>
-        </main>
+<body>
+<div class="dashboard-container">
+    <div class="sidebar">
+        <h2>SEDO</h2>
+        <ul>
+            <li class="active">Bảng điều khiển</li>
+            <li><a th:href="@{/admin/computer-devices}">Quản lý thiết bị máy tính</a></li>
+            <li><a th:href="@{/admin/orders}">Quản lý đơn hàng</a></li>
+            <li><a th:href="@{/admin/users}">Quản lý người dùng</a></li>
+        </ul>
     </div>
+    <div class="content">
+        <div class="topbar">
+            <div class="brand">Bảng điều khiển Quản trị</div>
+            <div class="user-info">
+                Quản trị viên
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="logout-btn">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Tổng số sản phẩm</div>
+                <div class="stat-value" th:text="${totalProducts}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Tổng số đơn hàng</div>
+                <div class="stat-value" th:text="${totalOrders}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Tổng số người dùng</div>
+                <div class="stat-value" th:text="${totalUsers}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Doanh thu</div>
+                <div class="stat-value">
+                    <span th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0.0 VNĐ</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Đơn hàng đã giao</div>
+                <div class="stat-value" th:text="${deliveredOrders}">0</div>
+            </div>
+        </div>
+        <div class="orders-section">
+            <div class="orders-header">
+                <span class="orders-title">Đơn hàng gần đây</span>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>MÃ ĐƠN HÀNG</th>
+                    <th>NGÀY</th>
+                    <th>KHÁCH HÀNG</th>
+                    <th>TRẠNG THÁI</th>
+                    <th>PHƯƠNG THỨC THANH TOÁN</th>
+                    <th>TỔNG CỘNG</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orderPage.content}">
+                    <td th:text="'#' + ${order.id}"></td>
+                    <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${order.customer.fullName}"></td>
+                    <td th:text="${order.status}" th:class="'status-' + ${order.status.toString().toLowerCase()}"></td>
+                    <td th:text="${order.paymentMethod}"></td>
+                    <td><span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
 </body>
 </html>

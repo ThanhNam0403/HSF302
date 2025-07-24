@@ -1,11 +1,13 @@
 // src/main/java/sum25/hsf302/sedo/service/CartDetailServiceImpl.java
 package sum25.hsf302.sedo.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sum25.hsf302.sedo.pojo.Cart;
 import sum25.hsf302.sedo.pojo.CartDetail;
 import sum25.hsf302.sedo.pojo.ComputerDevice;
+import sum25.hsf302.sedo.pojo.User;
 import sum25.hsf302.sedo.repository.CartDetailRepository;
 
 import java.util.List;
@@ -49,5 +51,16 @@ public class CartDetailServiceImpl implements CartDetailService {
     @Override
     public List<CartDetail> getCartDetailsByIds(List<Long> itemIds) {
         return cartDetailRepository.findAllById(itemIds);
+    }
+
+    @Transactional
+    @Override
+    public void removeCartDetailsByIds(List<Long> selectedIds, User user) {
+        cartDetailRepository.deleteByIdInAndCartUser(selectedIds, user);
+    }
+
+    @Override
+    public CartDetail getCartDetailById(Long id) {
+        return cartDetailRepository.findById(id).orElse(null);
     }
 }

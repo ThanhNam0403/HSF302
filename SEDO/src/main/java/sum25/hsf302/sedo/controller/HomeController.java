@@ -4,16 +4,15 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sum25.hsf302.sedo.pojo.Role;
@@ -35,6 +34,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Controller
 public class HomeController {
@@ -54,7 +54,7 @@ public class HomeController {
     @GetMapping("/SEDO")
     public String homePage(@RequestParam(defaultValue = "0") int page,
                            Model model) {
-        int pageSize = 10;
+        int pageSize = 9;
 
         Page<ComputerDevice> featuredPage = computerDeviceService.findFeaturedProductsPaginated(PageRequest.of(page, pageSize));
         List<Category> categories = categoryService.findAll();
@@ -91,6 +91,19 @@ public class HomeController {
                         HttpSession session,
                         RedirectAttributes redirectAttributes) {
 
+        // Validate email định dạng
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        if (email == null || !Pattern.matches(emailRegex, email)) {
+            redirectAttributes.addFlashAttribute("error", "Email không hợp lệ");
+            return "redirect:/login";
+        }
+
+        // Validate password không để trống
+        if (password == null || password.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Mật khẩu không được để trống");
+            return "redirect:/login";
+        }
+
         User user = userService.validateUser(email, password);
 
         if (user != null) {
@@ -98,7 +111,7 @@ public class HomeController {
 
             if (remember != null) {
                 Cookie emailCookie = new Cookie("rememberedEmail", email);
-                emailCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+                emailCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
                 emailCookie.setPath("/");
                 response.addCookie(emailCookie);
                 userService.rememberUser(email);
@@ -107,65 +120,64 @@ public class HomeController {
             if ("ADMIN".equals(user.getRole().getRoleName())) {
                 return "redirect:/admin/dashboard";
             } else {
-                return "redirect:/SEDO";  // Changed from "redirect:/homepage" to "redirect:/"
+                return "redirect:/SEDO";
             }
         }
 
-        redirectAttributes.addFlashAttribute("error", "Invalid email or password");
+        redirectAttributes.addFlashAttribute("error", "Email hoặc mật khẩu không đúng");
         return "redirect:/login";
     }
 
     @GetMapping("/register")
-    public String registerPage() {
+    public String showRegisterForm(Model model) {
+        model.addAttribute("user", new User());
         return "register";
     }
 
-    @PostMapping("/register")
-    public String register(@RequestParam String username,
-                           @RequestParam String email,
-                           @RequestParam String password,
-                           @RequestParam String fullName,
-                           @RequestParam String phoneNumber,
-                           @RequestParam String address,
-                           RedirectAttributes redirectAttributes) {
 
-        // Check if email already exists
-        if (userService.findByEmail(email) != null) {
-            redirectAttributes.addFlashAttribute("error", "Email already registered");
-            return "redirect:/register";
+    @PostMapping("/register")
+    public String register(@ModelAttribute("user") @Valid User user,
+                           BindingResult result,
+                           RedirectAttributes redirectAttributes,
+                           Model model) {
+        // Kiểm tra validation lỗi từ entity (email, password...)
+        if (result.hasErrors()) {
+            model.addAttribute("user", user);
+            return "register"; // trả về lại form và hiển thị lỗi
         }
 
-        // Check if username already exists
-        if (userService.findByUsername(username) != null) {
-            redirectAttributes.addFlashAttribute("error", "Username already taken");
-            return "redirect:/register";
+        // Kiểm tra trùng email
+        if (userService.findByEmail(user.getEmail()) != null) {
+            result.rejectValue("email", "error.user", "Email đã được sử dụng");
+        }
+
+        // Kiểm tra trùng username
+        if (userService.findByUsername(user.getUsername()) != null) {
+            result.rejectValue("username", "error.user", "Tên đăng nhập đã tồn tại");
+        }
+
+        // Nếu có lỗi thì quay lại trang đăng ký
+        if (result.hasErrors()) {
+            model.addAttribute("user", user);
+            return "register";
         }
 
         try {
-            // Create new user with CUSTOMER role
-            User user = new User();
-            user.setUsername(username);
-            user.setEmail(email);
-            user.setPassword(password);
-            user.setFullName(fullName);
-            user.setPhoneNumber(phoneNumber);
-            user.setAddress(address);
-            user.setActive(true);
-
-            // Set default CUSTOMER role
-            Role customerRole = roleService.findById(2L); // Assuming 2 is CUSTOMER role ID
+            // Set role
+            Role customerRole = roleService.findById(2L);
             user.setRole(customerRole);
-
+            user.setActive(true);
             userService.save(user);
 
-            redirectAttributes.addFlashAttribute("success", "Registration successful! Please login.");
+            redirectAttributes.addFlashAttribute("success", "Đăng ký thành công! Vui lòng đăng nhập.");
             return "redirect:/login";
 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Registration failed. Please try again.");
-            return "redirect:/register";
+            model.addAttribute("error", "Lỗi hệ thống. Vui lòng thử lại.");
+            return "register";
         }
     }
+
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -304,15 +316,6 @@ public class HomeController {
         return response;
     }
 
-    @GetMapping("/admin/dashboard")
-    public String adminDashboard(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || !"ADMIN".equals(user.getRole().getRoleName())) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-        return "admin-dashboard";
-    }
 
     @GetMapping("/customer/dashboard")
     public String customerDashboard(HttpSession session, Model model) {
@@ -325,4 +328,6 @@ public class HomeController {
         model.addAttribute("user", user);
         return "customer-dashboard";
     }
+
+
 }

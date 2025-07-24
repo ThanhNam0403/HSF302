@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Order</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f7f7fa; }
+        .dashboard-container { display: flex; }
+        .sidebar { width: 220px; background: #333353; color: #fff; height: 100vh; display: flex; flex-direction: column; padding-top: 24px; }
+        .sidebar h2 { font-size: 26px; margin: 0 0 40px 30px; font-weight: bold; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar li { padding: 15px 30px; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+        .sidebar li.active, .sidebar li:hover { background: #4b4b8e; }
+        .content { flex: 1; padding: 30px 40px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
+        .brand { font-size: 26px; font-weight: bold; color: #333353; }
+        .user-info { font-size: 16px; }
+        .logout-btn { background: #fff; border: 1px solid #333353; color: #333353; border-radius: 5px; padding: 6px 15px; cursor: pointer; font-weight: 500; }
+        .form-section { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(90,90,120,0.07); padding: 34px 38px 28px 38px; max-width: 560px; margin: 0 auto;}
+        h2 { margin-bottom: 25px; color: #333353; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 7px; font-weight: 500; }
+        input, select { width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 15px; }
+        .btn-blue { background: #2096f3; color: #fff; border: none; padding: 9px 26px; border-radius: 5px; font-weight: 500; cursor: pointer;}
+        .btn-cancel { background: #f44336; color: #fff; border: none; padding: 9px 26px; border-radius: 5px; margin-left: 10px; font-weight: 500; cursor: pointer; text-decoration: none; }
+        .form-actions { margin-top: 25px; }
+        .alert-success { color: #388e3c; background: #e8f5e9; padding: 9px 22px; border-radius: 5px; margin-bottom: 15px;}
+        .alert-error { color: #e53935; background: #ffebee; padding: 9px 22px; border-radius: 5px; margin-bottom: 15px;}
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <div class="sidebar">
+        <h2>OFS Fashion</h2>
+        <ul>
+            <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/admin/computer-devices}">Computer Device Management</a></li>
+            <li class="active">Order Management</li>
+            <li><a th:href="@{/admin/users}">User Management</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="topbar">
+            <div class="brand">Edit Order</div>
+            <div class="user-info">
+                Admin
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Edit Order</h2>
+
+            <!-- Thông báo thành công/lỗi -->
+            <div th:if="${success}" class="alert-success">
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert-error">
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/admin/orders/edit}" method="post" th:object="${order}">
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select th:field="*{status}">
+                        <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Shipping Address</label>
+                    <input th:field="*{shippingAddress}" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <input th:field="*{paymentMethod}" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Customer</label>
+                    <input th:value="${order.customer.fullName}" readonly />
+                </div>
+
+                <!-- Có thể bổ sung các trường khác bạn muốn chỉnh sửa -->
+
+                <div class="form-actions">
+                    <button class="btn-blue" type="submit">Update</button>
+                    <a th:href="@{/admin/orders}" class="btn-cancel">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
