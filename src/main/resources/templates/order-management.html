@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Đơn hàng</title>
+  <style>
+    :root {
+      --primary: #3949ab;
+      --primary-dark: #283593;
+      --blue: #2469d3;
+      --blue-hover: #174ead;
+      --sidebar-bg: linear-gradient(135deg, #23235a 70%, #5e60ce 100%);
+      --radius: 14px;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f6f8fc;
+    }
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 225px;
+      background: var(--sidebar-bg);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding-top: 38px;
+      box-shadow: 2px 0 18px rgba(44,44,80,0.04);
+    }
+    .sidebar h2 {
+      font-size: 28px;
+      margin: 0 0 46px 32px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar li {
+      padding: 16px 36px;
+      font-size: 17px;
+      cursor: pointer;
+      border-radius: 8px 0 0 8px;
+      margin-bottom: 6px;
+      transition: background 0.22s, font-weight 0.18s;
+    }
+    .sidebar li.active, .sidebar li:hover {
+      background: #5e60ce;
+      font-weight: 600;
+      box-shadow: 2px 4px 16px 0 rgba(94,96,206,0.07);
+    }
+    .sidebar li a {
+      color: #fff;
+      text-decoration: none;
+      width: 100%;
+      display: block;
+      height: 100%;
+    }
+
+    .content {
+      flex: 1;
+      padding: 44px 54px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 38px;
+    }
+    .brand {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--primary);
+      letter-spacing: 1.5px;
+    }
+    .user-info {
+      font-size: 17px;
+    }
+    .logout-btn {
+      background: #fff;
+      border: 1px solid var(--primary-dark);
+      color: var(--primary-dark);
+      border-radius: 6px;
+      padding: 7px 18px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-left: 10px;
+      transition: background 0.2s;
+    }
+    .logout-btn:hover {
+      background: #ecebfa;
+    }
+    .search-row {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 22px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(52,70,150,0.08);
+      width: 700px;
+      max-width: 100%;
+    }
+    .search-row input, .search-row select {
+      padding: 9px 13px;
+      border-radius: 5px;
+      border: 1px solid #d1d5e8;
+      font-size: 16px;
+      background: #f7f9fd;
+    }
+    .btn-blue {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 9px 26px;
+      border-radius: 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.18s, box-shadow 0.14s;
+      box-shadow: 0 2px 8px rgba(57,73,171,0.11);
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-blue:hover {
+      background: var(--blue-hover);
+    }
+    .btn-green {
+      color: #24ba4b;
+      background: #e7fbe8;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 5px 15px;
+      border-radius: 4px;
+      transition: background 0.16s, color 0.16s;
+      text-decoration: none;
+    }
+    .btn-green:hover {
+      background: #c9f5d3;
+    }
+    .btn-red {
+      color: #e53935;
+      background: #ffeced;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 5px 15px;
+      border-radius: 4px;
+      transition: background 0.16s, color 0.16s;
+    }
+    .btn-red:hover {
+      background: #ffd7d9;
+    }
+    .table-actions a, .table-actions button {
+      margin-right: 7px;
+    }
+    .orders-section {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 14px rgba(60,70,130,0.10);
+      padding: 28px 20px 14px 20px;
+      margin-top: 16px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+    th, td {
+      padding: 13px 10px;
+      text-align: left;
+      font-size: 15.5px;
+    }
+    th {
+      color: var(--primary);
+      border-bottom: 2px solid #e2e6f2;
+      background: #f8faff;
+      font-weight: 700;
+    }
+    tr {
+      background: #fff;
+      transition: background 0.12s;
+    }
+    tr:hover {
+      background: #f1f6fd;
+    }
+    td.status-delivered { color: #3bb772; font-weight: 600; }
+    td.status-processing { color: #d19818; font-weight: 600; }
+
+    .pagination {
+      margin-top: 21px;
+      text-align: center;
+    }
+    .pagination a {
+      margin: 0 4px;
+      padding: 7px 15px;
+      text-decoration: none;
+      border-radius: 5px;
+      color: var(--primary);
+      background: #f8faff;
+      transition: background 0.17s, color 0.16s;
+      font-size: 16px;
+    }
+    .pagination a.active-page {
+      background: var(--primary) !important;
+      color: #fff !important;
+      font-weight: bold;
+    }
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .search-row { width: 100%; }
+      table { min-width: 720px; }
+    }
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .content { padding: 22px 4px;}
+      .search-row { padding: 12px 5px; }
+      table { min-width: 400px;}
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-container">
+  <div class="sidebar">
+    <h2>SEDO</h2>
+    <ul>
+      <li><a th:href="@{/admin/dashboard}">Bảng điều khiển</a></li>
+      <li><a th:href="@{/admin/computer-devices}">Quản lý Thiết bị Máy tính</a></li>
+      <li class="active">Quản lý Đơn hàng</li>
+      <li><a th:href="@{/admin/users}">Quản lý Người dùng</a></li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div class="topbar">
+      <div class="brand">Quản lý Đơn hàng</div>
+      <div class="user-info">
+        Quản trị viên
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+          <button type="submit" class="logout-btn">Đăng xuất</button>
+        </form>
+      </div>
+    </div>
+    <form th:action="@{/admin/orders}" method="get" class="search-row">
+      <input type="text" placeholder="Tìm kiếm đơn hàng..." name="search" th:value="${search}">
+      <select name="status">
+        <option th:value="''" th:selected="${selectedStatus == null}">Tất cả trạng thái</option>
+        <option th:each="st : ${statuses}"
+                th:value="${st.name()}"
+                th:text="${st.name()}"
+                th:selected="${selectedStatus != null && st.name() == selectedStatus.name()}"></option>
+      </select>
+      <button class="btn-blue" type="submit">Tìm kiếm</button>
+      <a th:href="@{/admin/orders}" class="btn-blue" style="background:#e53935; margin-left:6px;">Xóa</a>
+    </form>
+    <div class="orders-section">
+      <table>
+        <thead>
+        <tr>
+          <th>MÃ ĐƠN</th>
+          <th>KHÁCH HÀNG</th>
+          <th>NGÀY TẠO</th>
+          <th>PHƯƠNG THỨC THANH TOÁN</th>
+          <th>TRẠNG THÁI</th>
+          <th>ĐỊA CHỈ GIAO HÀNG</th>
+          <th>TỔNG TIỀN</th>
+          <th>HÀNH ĐỘNG</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orderPage.content}">
+          <td th:text="${order.id}"></td>
+          <td th:text="${order.customer.fullName}"></td>
+          <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}"></td>
+          <td th:text="${order.paymentMethod}"></td>
+          <td th:text="${order.status}"></td>
+          <td th:text="${order.shippingAddress}"></td>
+          <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></td>
+          <td class="table-actions">
+            <a th:href="@{'/admin/orders/view/' + ${order.id}}" class="btn-blue">Xem</a>
+            <a th:href="@{'/admin/orders/edit/' + ${order.id}}" class="btn-green">Sửa</a>
+            <form th:action="@{'/admin/orders/delete/' + ${order.id}}" method="post" style="display:inline;">
+              <button class="btn-red" type="submit" onclick="return confirm('Bạn có chắc chắn không?')">Xóa</button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Phân trang -->
+    <div class="pagination" th:if="${totalPages > 1}">
+      <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+         th:href="@{|/admin/orders?page=${i}|}"
+         th:text="${i + 1}"
+         th:classappend="${i eq currentPage} ? 'active-page'"></a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!-- product-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Results</title>
+    <link rel="stylesheet" th:href="@{/taskbar.css}">
+    <link rel="stylesheet" th:href="@{/product.css}">
+</head>
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container">
+    <h3 th:if="${keyword}" th:text="'Search results for: ' + ${keyword}"></h3>
+    <h3 th:if="${brand}" th:text="'Brand: ' + ${brand}"></h3>
+
+    <!-- Hiển thị danh sách sản phẩm nếu có -->
+    <div class="product-grid" th:if="${!#lists.isEmpty(devices)}">
+        <div class="product-card" th:each="product : ${devices}">
+            <img th:src="@{${#lists.isEmpty(product.computerImages) ? '/images/placeholder.jpg' : '/uploads/ComputerDevices/' + product.computerImages[0].imageUrl}}"
+                 th:alt="${product.name}" class="product-img" />
+            <h3 th:text="${product.name}"></h3>
+            <p th:text="${product.brand + ' ' + product.model}"></p>
+            <p th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></p>
+            <a th:href="@{/products/{id}(id=${product.id})}" class="btn">Xem chi tiết</a>
+        </div>
+    </div>
+
+    <!-- Nếu không có sản phẩm -->
+    <div th:if="${#lists.isEmpty(devices)}">
+        <p>Không tìm thấy sản phẩm phù hợp.</p>
+    </div>
+</div>
+<script>
+    function toggleMegaMenu(event) {
+        event.preventDefault();
+        const menu = document.getElementById("megaMenu");
+        const isVisible = menu.style.display === "grid" || menu.style.display === "block";
+        menu.style.display = isVisible ? "none" : "grid";
+    }
+
+    document.addEventListener('click', function (e) {
+        const menu = document.getElementById("megaMenu");
+        const trigger = document.querySelector('.dropbtn');
+        if (!menu || !trigger) return;
+        if (!menu.contains(e.target) && !trigger.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+</script>
+</body>
+</html>

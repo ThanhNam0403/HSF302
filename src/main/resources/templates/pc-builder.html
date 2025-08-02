@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Build Your PC - PC Parts Shop</title>
+    <link rel="stylesheet" th:href="@{/builder.css}">
+    <link rel="stylesheet" th:href="@{/modal.css}">
+    <link rel="stylesheet" th:href="@{/homebutton.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<!-- Về trang chủ không cần dùng navbar -->
+<a th:href="@{/SEDO}" class="btn-home">🏠 Về trang chủ</a>
+<div class="container">
+
+    <div class="header">
+        <h1>Xây Dựng PC Của Bạn</h1>
+        <p>Chọn linh kiện để tạo nên chiếc PC hoàn hảo</p>
+    </div>
+
+    <form th:action="@{/pc-builder/select}" method="post" id="pcBuilderForm">
+        <input type="hidden" id="input-cpu" name="cpuId"
+               th:value="${selected != null and selected.cpu != null ? selected.cpu.id : ''}"/>
+
+        <input type="hidden" id="input-mainboard" name="mainboardId"
+               th:value="${selected != null and selected.mainboard != null ? selected.mainboard.id : ''}"/>
+
+        <input type="hidden" id="input-ram" name="ramId"
+               th:value="${selected != null and selected.ram != null ? selected.ram.id : ''}"/>
+
+        <input type="hidden" id="input-vga" name="vgaId"
+               th:value="${selected != null and selected.gpu != null ? selected.gpu.id : ''}"/>
+
+        <input type="hidden" id="input-hdd" name="hddId"
+               th:value="${selected != null and selected.hdd != null ? selected.hdd.id : ''}"/>
+
+        <input type="hidden" id="input-ssd" name="ssdId"
+               th:value="${selected != null and selected.ssd != null ? selected.ssd.id : ''}"/>
+
+        <input type="hidden" id="input-psu" name="psuId"
+               th:value="${selected != null and selected.psu != null ? selected.psu.id : ''}"/>
+
+        <input type="hidden" id="input-case" name="caseId"
+               th:value="${selected != null and selected.pcCase != null ? selected.pcCase.id : ''}"/>
+
+        <input type="hidden" id="input-cooling" name="coolingId"
+               th:value="${selected != null and selected.cooling != null ? selected.cooling.id : ''}"/>
+
+        <input type="hidden" id="input-monitor" name="monitorId"
+               th:value="${selected != null and selected.monitor != null ? selected.monitor.id : ''}"/>
+
+        <input type="hidden" id="input-keyboard" name="keyboardId"
+               th:value="${selected != null and selected.keyboard != null ? selected.keyboard.id : ''}"/>
+
+        <input type="hidden" id="input-mouse" name="mouseId"
+               th:value="${selected != null and selected.mouse != null ? selected.mouse.id : ''}"/>
+
+        <input type="hidden" id="input-headphones" name="headphonesId"
+               th:value="${selected != null and selected.headphones != null ? selected.headphones.id : ''}"/>
+
+        <input type="hidden" id="input-speakers" name="speakersId"
+               th:value="${selected != null and selected.speakers != null ? selected.speakers.id : ''}"/>
+
+
+        <!-- Nút chọn linh kiện CPU -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Vi xử lý</h3>
+                    <p class="component-status" id="cpu-status"
+                       th:text="${selected != null and selected.cpu != null} ? ${selected.cpu.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="cpu-price"
+                       th:text="${selected != null and selected.cpu != null} ? ${#numbers.formatInteger(selected.cpu.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="window.openModal('cpu')">Chọn</button>
+            </div>
+        </div>
+
+
+        <!-- Bo mạch chủ -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-memory"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Bo mạch chủ</h3>
+                    <p class="component-status" id="mainboard-status"
+                       th:text="${selected != null and selected.mainboard != null} ? ${selected.mainboard.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="mainboard-price"
+                       th:text="${selected != null and selected.mainboard != null} ? ${#numbers.formatInteger(selected.mainboard.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('mainboard')">Chọn</button>
+            </div>
+        </div>
+
+        <!-- RAM -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-memory"></i>
+                </div>
+                <div class="component-details">
+                    <h3>RAM</h3>
+                    <p class="component-status" id="ram-status"
+                       th:text="${selected != null and selected.ram != null} ? ${selected.ram.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="ram-price"
+                       th:text="${selected != null and selected.ram != null} ? ${#numbers.formatInteger(selected.ram.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('ram')">Chọn</button>
+            </div>
+        </div>
+
+        <!-- CARD chọn ổ HDD -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-hdd"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Ổ HDD</h3>
+                    <p class="component-status" id="hdd-status"
+                       th:text="${selected != null and selected.mainboard != null} ? ${selected.hdd.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="hdd-price"
+                       th:text="${selected != null and selected.hdd != null} ? ${#numbers.formatInteger(selected.hdd.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('hdd')">Chọn</button>
+            </div>
+        </div>
+
+
+
+        <!-- Ổ SSD -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-save"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Ổ SSD</h3>
+                    <p class="component-status" id="ssd-status"
+                       th:text="${selected != null and selected.ssd != null} ? ${selected.ssd.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="ssd-price"
+                       th:text="${selected != null and selected.ssd != null} ? ${#numbers.formatInteger(selected.ssd.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('ssd')">Chọn</button>
+            </div>
+        </div>
+
+
+
+
+        <!-- VGA -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Card đồ họa</h3>
+                    <p class="component-status" id="vga-status"
+                       th:text="${selected != null and selected.gpu != null} ? ${selected.gpu.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="vga-price"
+                       th:text="${selected != null and selected.gpu != null} ? ${#numbers.formatInteger(selected.gpu.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <div class="component-actions">
+                    <button type="button" class="btn-select" onclick="openModal('vga')">Chọn</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nguồn -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Nguồn</h3>
+                    <p class="component-status" id="psu-status"
+                       th:text="${selected != null and selected.psu != null} ? ${selected.psu.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="psu-price"
+                       th:text="${selected != null and selected.psu != null} ? ${#numbers.formatInteger(selected.psu.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('psu')">Chọn</button>
+            </div>
+        </div>
+
+
+
+
+        <!-- Vỏ case -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Vỏ case</h3>
+                    <p class="component-status" id="case-status"
+                       th:text="${selected != null and selected.pcCase != null} ? ${selected.pcCase.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="case-price"
+                       th:text="${selected != null and selected.pcCase != null} ? ${#numbers.formatInteger(selected.pcCase.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('case')">Chọn</button>
+            </div>
+        </div>
+
+
+
+        <!-- Tản nhiệt -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-fan"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Tản nhiệt</h3>
+                    <p class="component-status" id="cooling-status"
+                       th:text="${selected != null and selected.cooling != null} ? ${selected.cooling.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="cooling-price"
+                       th:text="${selected != null and selected.cooling != null} ? ${#numbers.formatInteger(selected.cooling.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('cooling')">Chọn</button>
+            </div>
+        </div>
+
+
+
+        <!-- Màn hình -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Màn hình</h3>
+                    <p class="component-status" id="monitor-status"
+                       th:text="${selected != null and selected.monitor != null} ? ${selected.monitor.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="monitor-price"
+                       th:text="${selected != null and selected.monitor != null} ? ${#numbers.formatInteger(selected.monitor.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('monitor')">Chọn</button>
+            </div>
+        </div>
+
+
+
+
+        <!-- Bàn phím -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-keyboard"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Bàn phím</h3>
+                    <p class="component-status" id="keyboard-status"
+                       th:text="${selected != null and selected.keyboard != null} ? ${selected.keyboard.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="keyboard-price"
+                       th:text="${selected != null and selected.keyboard != null} ? ${#numbers.formatInteger(selected.keyboard.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('keyboard')">Chọn</button>
+            </div>
+        </div>
+
+        <!-- Chuột -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-mouse"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Chuột</h3>
+                    <p class="component-status" id="mouse-status"
+                       th:text="${selected != null and selected.mouse != null} ? ${selected.mouse.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="mouse-price"
+                       th:text="${selected != null and selected.mouse != null} ? ${#numbers.formatInteger(selected.mouse.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('mouse')">Chọn</button>
+            </div>
+        </div>
+
+
+
+        <!-- Tai nghe -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-headphones"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Tai nghe</h3>
+                    <p class="component-status" id="headphones-status"
+                       th:text="${selected != null and selected.headphones != null} ? ${selected.headphones.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="headphones-price"
+                       th:text="${selected != null and selected.headphones != null} ? ${#numbers.formatInteger(selected.headphones.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('headphones')">Chọn</button>
+            </div>
+        </div>
+
+
+        <!-- Loa máy tính -->
+        <div class="component-card">
+            <div class="component-info">
+                <div class="component-icon">
+                    <i class="fas fa-volume-up"></i>
+                </div>
+                <div class="component-details">
+                    <h3>Loa máy tính</h3>
+                    <p class="component-status" id="speakers-status"
+                       th:text="${selected != null and selected.speakers != null} ? ${selected.speakers.name} : 'Vui lòng chọn linh kiện'"></p>
+
+                    <p class="component-price" id="speakers-price"
+                       th:text="${selected != null and selected.speakers != null} ? ${#numbers.formatInteger(selected.speakers.price, 0, 'POINT')} + ' VND' : ''"></p>
+                </div>
+            </div>
+            <div class="component-actions">
+                <button type="button" class="btn-select" onclick="openModal('speakers')">Chọn</button>
+            </div>
+        </div>
+
+
+        <div class="summary" th:if="${selected != null}">
+            <h2>Cấu hình của bạn</h2>
+            <div class="summary-grid">
+                <div class="summary-item" th:if="${selected.cpu != null}">
+                    <strong>CPU:</strong> <span th:text="${selected.cpu.name}"></span>
+                    <span class="price" th:text="${selected.cpu.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.mainboard != null}">
+                    <strong>Mainboard:</strong> <span th:text="${selected.mainboard.name}"></span>
+                    <span class="price" th:text="${selected.mainboard.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.ram != null}">
+                    <strong>RAM:</strong> <span th:text="${selected.ram.name}"></span>
+                    <span class="price" th:text="${selected.ram.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.gpu != null}">
+                    <strong>Card đồ họa:</strong> <span th:text="${selected.gpu.name}"></span>
+                    <span class="price" th:text="${selected.gpu.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.ssd != null}">
+                    <strong>SSD:</strong> <span th:text="${selected.ssd.name}"></span>
+                    <span class="price" th:text="${selected.ssd.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.hdd != null}">
+                    <strong>HDD:</strong> <span th:text="${selected.hdd.name}"></span>
+                    <span class="price" th:text="${selected.hdd.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.psu != null}">
+                    <strong>Nguồn:</strong> <span th:text="${selected.psu.name}"></span>
+                    <span class="price" th:text="${selected.psu.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.pcCase != null}">
+                    <strong>Vỏ case:</strong> <span th:text="${selected.pcCase.name}"></span>
+                    <span class="price" th:text="${selected.pcCase.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.cooling != null}">
+                    <strong>Tản nhiệt:</strong> <span th:text="${selected.cooling.name}"></span>
+                    <span class="price" th:text="${selected.cooling.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.monitor != null}">
+                    <strong>Màn hình:</strong> <span th:text="${selected.monitor.name}"></span>
+                    <span class="price" th:text="${selected.monitor.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.keyboard != null}">
+                    <strong>Bàn phím:</strong> <span th:text="${selected.keyboard.name}"></span>
+                    <span class="price" th:text="${selected.keyboard.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.mouse != null}">
+                    <strong>Chuột:</strong> <span th:text="${selected.mouse.name}"></span>
+                    <span class="price" th:text="${selected.mouse.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.headphones != null}">
+                    <strong>Tay nghe:</strong> <span th:text="${selected.headphones.name}"></span>
+                    <span class="price" th:text="${selected.headphones.price} + ' VND'"></span>
+                </div>
+                <div class="summary-item" th:if="${selected.speakers != null}">
+                    <strong>Loa máy tính:</strong> <span th:text="${selected.speakers.name}"></span>
+                    <span class="price" th:text="${selected.speakers.price} + ' VND'"></span>
+                </div>
+            </div>
+
+            <div class="total-section">
+                <h3>Tổng cộng: <span th:text="${totalPrice} + ' VND'"></span></h3>
+                <!-- Nút Thanh toán -->
+            </div>
+        </div>
+
+        <!-- ✅ Nút Cập nhật cấu hình -->
+        <div class="actions">
+            <button type="submit" name="action" value="checkout" class="btn-checkout">Thanh toán</button>
+            <button type="submit" name="action" value="update" class="btn-primary">Cập nhật cấu hình</button>
+        </div>
+    </form>
+
+    <div id="cpu-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn CPU</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get" id="cpuSearchForm">
+                    <input type="text" name="cpuSearch" placeholder="Tìm kiếm CPU..." th:value="${cpuSearch}"/>
+                    <input type="hidden" name="openModal" value="cpu"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="cpuItem  : ${cpu}" class="product-item"
+                     th:data-id="${cpuItem .id}"
+                     th:data-name="${cpuItem .name}"
+                     th:data-price="${cpuItem .price}"
+                     onclick="handleSelect(this, 'cpu')">
+
+                    <img th:if="${cpuItem .computerImages != null and !cpuItem .computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${cpuItem .computerImages[0].imageUrl}}"
+                         alt="CPU Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${cpuItem .name}"></h5>
+                    <p th:text="'Giá: ' + ${cpuItem .price} + ' VND'"></p>
+                </div>
+            </div>
+
+            <!-- Phân trang -->
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                    <span th:if="${(cpuCurrentPage ?: 0) > 0}">
+                        <a th:href="@{|/pc-builder?cpuPage=${(cpuCurrentPage ?: 0) - 1}&openModal=cpu|}">&laquo; Trước</a>
+                    </span>
+                <span th:each="i : ${#numbers.sequence(0, (cpuTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (cpuCurrentPage ?: 0)} ? 'active'">
+                        <a th:href="@{|/pc-builder?cpuPage=${i}&openModal=cpu|}" th:text="${i + 1}"></a>
+                    </span>
+                <span th:if="${(cpuCurrentPage ?: 0) < (cpuTotalPages ?: 1) - 1}">
+                        <a th:href="@{|/pc-builder?cpuPage=${(cpuCurrentPage ?: 0) + 1}&openModal=cpu|}">Tiếp &raquo;</a>
+                    </span>
+            </div>
+            <button type="button" onclick="closeModal('cpu')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Mainboard -->
+    <div id="mainboard-modal" class="component-modal">
+        <div class="modal-content">
+            <h4>Chọn Mainboard</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="mainboardSearch" placeholder="Tìm kiếm Mainboard..." th:value="${mainboardSearch}" />
+                    <input type="hidden" name="openModal" value="mainboard" />
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="mainboards : ${mainboard}" class="product-item"
+                     th:attr="data-id=${mainboards.id}, data-name=${mainboards.name}, data-price=${mainboards.price}"
+                     onclick="handleSelect(this, 'mainboard')">
+
+                    <img th:if="${mainboards.computerImages != null and !mainboards.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${mainboards.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+
+                    <h5 th:text="${mainboards.name}"></h5>
+                    <p th:text="'Giá: ' + ${mainboards.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                    <span th:if="${(mainboardCurrentPage ?: 0) > 0}">
+                        <a th:href="@{|/pc-builder?mainboardPage=${(mainboardCurrentPage ?: 0) - 1}&openModal=mainboard|}">&laquo; Trước</a>
+                    </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (mainboardTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (mainboardCurrentPage ?: 0)} ? 'active'">
+                        <a th:href="@{|/pc-builder?mainboardPage=${i}&openModal=mainboard|}" th:text="${i + 1}"></a>
+                    </span>
+
+                <span th:if="${(mainboardCurrentPage ?: 0) < (mainboardTotalPages ?: 1) - 1}">
+                        <a th:href="@{|/pc-builder?mainboardPage=${(mainboardCurrentPage ?: 0) + 1}&openModal=mainboard|}">Tiếp &raquo;</a>
+                    </span>
+            </div>
+
+            <button type="button" onclick="closeModal('mainboard')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn RAM -->
+    <div id="ram-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn RAM</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="ramSearch" placeholder="Tìm kiếm RAM..." th:value="${ramSearch}"/>
+                    <input type="hidden" name="openModal" value="ram"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="rams : ${ram}" class="product-item"
+                     th:data-id="${rams.id}"
+                     th:data-name="${rams.name}"
+                     th:data-price="${rams.price}"
+                     onclick="handleSelect(this, 'ram')">
+
+                    <img th:if="${rams.computerImages != null and !rams.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${rams.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${rams.name}"></h5>
+                    <p th:text="'Giá: ' + ${rams.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                <span th:if="${(ramCurrentPage ?: 0) > 0}">
+                    <a th:href="@{|/pc-builder?ramPage=${(ramCurrentPage ?: 0) - 1}&openModal=ram|}">&laquo; Trước</a>
+                </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (ramTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (ramCurrentPage ?: 0)} ? 'active'">
+                    <a th:href="@{|/pc-builder?ramPage=${i}&openModal=ram|}" th:text="${i + 1}"></a>
+                </span>
+
+                <span th:if="${(ramCurrentPage ?: 0) < (ramTotalPages ?: 1) - 1}">
+                    <a th:href="@{|/pc-builder?ramPage=${(ramCurrentPage ?: 0) + 1}&openModal=ram|}">Tiếp &raquo;</a>
+                </span>
+            </div>
+
+            <button type="button" onclick="closeModal('ram')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn HDD -->
+    <div id="hdd-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn ổ HDD</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="hddSearch" placeholder="Tìm kiếm HDD..." th:value="${hddSearch}"/>
+                    <input type="hidden" name="openModal" value="hdd"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="hdds : ${hdd}" class="product-item"
+                     th:data-id="${hdds.id}"
+                     th:data-name="${hdds.name}"
+                     th:data-price="${hdds.price}"
+                     onclick="handleSelect(this, 'hdd')">
+
+                    <img th:if="${hdds.computerImages != null and !hdds.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${hdds.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${hdds.name}"></h5>
+                    <p th:text="'Giá: ' + ${hdds.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+            <span th:if="${(hddCurrentPage ?: 0) > 0}">
+                <a th:href="@{|/pc-builder?hddPage=${(hddCurrentPage ?: 0) - 1}&openModal=hdd|}">&laquo; Trước</a>
+            </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (hddTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (hddCurrentPage ?: 0)} ? 'active'">
+                <a th:href="@{|/pc-builder?hddPage=${i}&openModal=hdd|}" th:text="${i + 1}"></a>
+            </span>
+
+                <span th:if="${(hddCurrentPage ?: 0) < (hddTotalPages ?: 1) - 1}">
+                <a th:href="@{|/pc-builder?hddPage=${(hddCurrentPage ?: 0) + 1}&openModal=hdd|}">Tiếp &raquo;</a>
+            </span>
+            </div>
+
+            <button type="button" onclick="closeModal('hdd')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn SSD -->
+    <div id="ssd-modal" class="component-modal">
+
+
+        <div class="modal-content">
+            <h4>Chọn SSD</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="ssdSearch" placeholder="Tìm kiếm SSD..." th:value="${ssdSearch}"/>
+                    <input type="hidden" name="openModal" value="ssd"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="ssds : ${ssd}" class="product-item"
+                     th:data-id="${ssds.id}"
+                     th:data-name="${ssds.name}"
+                     th:data-price="${ssds.price}"
+                     onclick="handleSelect(this, 'ssd')">
+
+                    <img th:if="${ssds.computerImages != null and !ssds.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${ssds.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${ssds.name}"></h5>
+                    <p th:text="'Giá: ' + ${ssds.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+            <span th:if="${(ssdCurrentPage ?: 0) > 0}">
+                <a th:href="@{|/pc-builder?ssdPage=${(ssdCurrentPage ?: 0) - 1}&openModal=ssd|}">&laquo; Trước</a>
+            </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (ssdTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (ssdCurrentPage ?: 0)} ? 'active'">
+                <a th:href="@{|/pc-builder?ssdPage=${i}&openModal=ssd|}" th:text="${i + 1}"></a>
+            </span>
+
+                <span th:if="${(ssdCurrentPage ?: 0) < (ssdTotalPages ?: 1) - 1}">
+                <a th:href="@{|/pc-builder?ssdPage=${(ssdCurrentPage ?: 0) + 1}&openModal=ssd|}">Tiếp &raquo;</a>
+            </span>
+            </div>
+
+            <button type="button" onclick="closeModal('ssd')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn VGA -->
+    <div id="vga-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Card đồ họa</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="vgaSearch" placeholder="Tìm kiếm VGA..." th:value="${vgaSearch}"/>
+                    <input type="hidden" name="openModal" value="vga"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="vgas : ${vga}" class="product-item"
+                     th:data-id="${vgas.id}"
+                     th:data-name="${vgas.name}"
+                     th:data-price="${vgas.price}"
+                     onclick="handleSelect(this, 'vga')">
+
+                    <img th:if="${vgas.computerImages != null and !vgas.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${vgas.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${vgas.name}"></h5>
+                    <p th:text="'Giá: ' + ${vgas.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+            <span th:if="${(vgaCurrentPage ?: 0) > 0}">
+                <a th:href="@{|/pc-builder?vgaPage=${(vgaCurrentPage ?: 0) - 1}&openModal=vga|}">&laquo; Trước</a>
+            </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (vgaTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (vgaCurrentPage ?: 0)} ? 'active'">
+                <a th:href="@{|/pc-builder?vgaPage=${i}&openModal=vga|}" th:text="${i + 1}"></a>
+            </span>
+
+                <span th:if="${(vgaCurrentPage ?: 0) < (vgaTotalPages ?: 1) - 1}">
+                <a th:href="@{|/pc-builder?vgaPage=${(vgaCurrentPage ?: 0) + 1}&openModal=vga|}">Tiếp &raquo;</a>
+            </span>
+            </div>
+
+            <button type="button" onclick="closeModal('vga')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn PSU -->
+    <div id="psu-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn Nguồn</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="psuSearch" placeholder="Tìm kiếm PSU..." th:value="${psuSearch}"/>
+                    <input type="hidden" name="openModal" value="psu"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="psus : ${psu}" class="product-item"
+                     th:data-id="${psus.id}"
+                     th:data-name="${psus.name}"
+                     th:data-price="${psus.price}"
+                     onclick="handleSelect(this, 'psu')">
+
+                    <img th:if="${psus.computerImages != null and !psus.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${psus.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${psus.name}"></h5>
+                    <p th:text="'Giá: ' + ${psus.price} + ' VND'"></p>
+                </div>
+            </div>
+            <!-- Phân trang PSU -->
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+            <span th:if="${(psuCurrentPage ?: 0) > 0}">
+                <a th:href="@{|/pc-builder?psuPage=${(psuCurrentPage ?: 0) - 1}&openModal=psu|}">&laquo; Trước</a>
+            </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (psuTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (psuCurrentPage ?: 0)} ? 'active'">
+                <a th:href="@{|/pc-builder?psuPage=${i}&openModal=psu|}" th:text="${i + 1}"></a>
+            </span>
+
+                <span th:if="${(psuCurrentPage ?: 0) < (psuTotalPages ?: 1) - 1}">
+                <a th:href="@{|/pc-builder?psuPage=${(psuCurrentPage ?: 0) + 1}&openModal=psu|}">Tiếp &raquo;</a>
+            </span>
+            </div>
+
+            <button type="button" onclick="closeModal('psu')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Case -->
+    <div id="case-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn Vỏ Case</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="caseSearch" placeholder="Tìm kiếm Case..." th:value="${caseSearch}"/>
+                    <input type="hidden" name="openModal" value="case"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="cs : ${case}" class="product-item"
+                     th:data-id="${cs.id}"
+                     th:data-name="${cs.name}"
+                     th:data-price="${cs.price}"
+                     onclick="handleSelect(this, 'case')">
+
+                    <img th:if="${cs.computerImages != null and !cs.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${cs.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${cs.name}"></h5>
+                    <p th:text="'Giá: ' + ${cs.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+            <span th:if="${(caseCurrentPage ?: 0) > 0}">
+                <a th:href="@{|/pc-builder?casePage=${(caseCurrentPage ?: 0) - 1}&openModal=case|}">&laquo; Trước</a>
+            </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (caseTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (caseCurrentPage ?: 0)} ? 'active'">
+                <a th:href="@{|/pc-builder?casePage=${i}&openModal=case|}" th:text="${i + 1}"></a>
+            </span>
+
+                <span th:if="${(caseCurrentPage ?: 0) < (caseTotalPages ?: 1) - 1}">
+                <a th:href="@{|/pc-builder?casePage=${(caseCurrentPage ?: 0) + 1}&openModal=case|}">Tiếp &raquo;</a>
+            </span>
+            </div>
+
+            <button type="button" onclick="closeModal('case')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Tản nhiệt -->
+    <div id="cooling-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn Tản nhiệt</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="coolerSearch" placeholder="Tìm kiếm Cooler..." th:value="${coolerSearch}"/>
+                    <input type="hidden" name="openModal" value="cooling"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="coolings : ${cooling}" class="product-item"
+                     th:data-id="${coolings.id}"
+                     th:data-name="${coolings.name}"
+                     th:data-price="${coolings.price}"
+                     onclick="handleSelect(this, 'cooling')">
+
+                    <img th:if="${coolings.computerImages != null and !coolings.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${coolings.computerImages[0].imageUrl}}"
+                         alt="Mainboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+
+                    <h5 th:text="${coolings.name}"></h5>
+                    <p th:text="'Giá: ' + ${coolings.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+            <span th:if="${(coolerCurrentPage ?: 0) > 0}">
+                <a th:href="@{|/pc-builder?coolerPage=${(coolerCurrentPage ?: 0) - 1}&openModal=cooling|}">&laquo; Trước</a>
+            </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (coolerTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (coolerCurrentPage ?: 0)} ? 'active'">
+                <a th:href="@{|/pc-builder?coolerPage=${i}&openModal=cooling|}" th:text="${i + 1}"></a>
+            </span>
+
+                <span th:if="${(coolerCurrentPage ?: 0) < (coolerTotalPages ?: 1) - 1}">
+                <a th:href="@{|/pc-builder?coolerPage=${(coolerCurrentPage ?: 0) + 1}&openModal=cooling|}">Tiếp &raquo;</a>
+            </span>
+            </div>
+
+
+            <button type="button" onclick="closeModal('cooling')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Màn hình -->
+    <div id="monitor-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn Màn hình</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="monitorSearch" placeholder="Tìm kiếm Monitor..."
+                           th:value="${monitorSearch}"/>
+                    <input type="hidden" name="openModal" value="monitor"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="monitor : ${monitor}" class="product-item"
+                     th:data-id="${monitor.id}"
+                     th:data-name="${monitor.name}"
+                     th:data-price="${monitor.price}"
+                     onclick="handleSelect(this, 'monitor')">
+                    <img th:if="${monitor.computerImages != null and !monitor.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${monitor.computerImages[0].imageUrl}}"
+                         alt="Monitor Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+                    <h5 th:text="${monitor.name}"></h5>
+                    <p th:text="'Giá: ' + ${monitor.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                <span th:if="${(monitorCurrentPage ?: 0) > 0}">
+                    <a th:href="@{|/pc-builder?monitorPage=${(monitorCurrentPage ?: 0) - 1}&openModal=monitor|}">&laquo; Trước</a>
+                </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (monitorTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (coolerCurrentPage ?: 0)} ? 'active'">
+                    <a th:href="@{|/pc-builder?coolerPage=${i}&openModal=monitor|}" th:text="${i + 1}"></a>
+                </span>
+
+                <span th:if="${(monitorCurrentPage ?: 0) < (monitorTotalPages ?: 1) - 1}">
+                    <a th:href="@{|/pc-builder?monitorPage=${(monitorCurrentPage ?: 0) + 1}&openModal=monitor|}">Tiếp &raquo;</a>
+                </span>
+            </div>
+            <button type="button" onclick="closeModal('monitor')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Bàn phím -->
+    <div id="keyboard-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn Bàn phím</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="keyboardSearch" placeholder="Tìm kiếm Keyboard..."
+                           th:value="${keyboardSearch}"/>
+                    <input type="hidden" name="openModal" value="keyboard"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="keyboards : ${keyboard}" class="product-item"
+                     th:data-id="${keyboards.id}"
+                     th:data-name="${keyboards.name}"
+                     th:data-price="${keyboards.price}"
+                     onclick="handleSelect(this, 'keyboard')">
+                    <img th:if="${keyboards.computerImages != null and !keyboards.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${keyboards.computerImages[0].imageUrl}}"
+                         alt="Keyboard Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+                    <h5 th:text="${keyboards.name}"></h5>
+                    <p th:text="'Giá: ' + ${keyboards.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                <span th:if="${(keyboardCurrentPage ?: 0) > 0}">
+                    <a th:href="@{|/pc-builder?keyboardPage=${(keyboardCurrentPage ?: 0) - 1}&openModal=keyboard|}">&laquo; Trước</a>
+                </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (monitorTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (keyboardCurrentPage ?: 0)} ? 'active'">
+                    <a th:href="@{|/pc-builder?keyboardPage=${i}&openModal=keyboard|}" th:text="${i + 1}"></a>
+                </span>
+
+                <span th:if="${(keyboardCurrentPage ?: 0) < (keyboardTotalPages ?: 1) - 1}">
+                    <a th:href="@{|/pc-builder?keyboardPage=${(keyboardCurrentPage ?: 0) + 1}&openModal=keyboard|}">Tiếp &raquo;</a>
+                </span>
+            </div>
+            <button type="button" onclick="closeModal('keyboard')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Chuột -->
+    <div id="mouse-modal" class="component-modal">
+        <div class="modal-content">
+            <h4>Chọn Chuột</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="mouseSearch" placeholder="Tìm kiếm Mouse..." th:value="${mouseSearch}"/>
+                    <input type="hidden" name="openModal" value="mouse"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="mouse : ${mouse}" class="product-item"
+                     th:data-id="${mouse.id}"
+                     th:data-name="${mouse.name}"
+                     th:data-price="${mouse.price}"
+                     onclick="handleSelect(this, 'mouse')">
+                    <img th:if="${mouse.computerImages != null and !mouse.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${mouse.computerImages[0].imageUrl}}"
+                         alt="Mouse Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+                    <h5 th:text="${mouse.name}"></h5>
+                    <p th:text="'Giá: ' + ${mouse.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                    <span th:if="${(mouseCurrentPage ?: 0) > 0}">
+                        <a th:href="@{|/pc-builder?mousePage=${(mouseCurrentPage ?: 0) - 1}&openModal=mouse|}">&laquo; Trước</a>
+                    </span>
+
+                <span th:each="i : ${#numbers.sequence(0, (mouseTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (mouseCurrentPage ?: 0)} ? 'active'">
+                        <a th:href="@{|/pc-builder?mousePage=${i}&openModal=mouse|}" th:text="${i + 1}"></a>
+                    </span>
+
+                <span th:if="${(mouseCurrentPage ?: 0) < (mouseTotalPages ?: 1) - 1}">
+                        <a th:href="@{|/pc-builder?mousePage=${(mouseCurrentPage ?: 0) + 1}&openModal=mouse|}">Tiếp &raquo;</a>
+                    </span>
+            </div>
+            <button type="button" onclick="closeModal('mouse')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Tai nghe -->
+    <div id="headphones-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn Tai nghe</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="headphoneSearch" placeholder="Tìm kiếm Headphone..."
+                           th:value="${headphoneSearch}"/>
+                    <input type="hidden" name="openModal" value="headphones"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="headphone : ${headphones}" class="product-item"
+                     th:data-id="${headphone.id}"
+                     th:data-name="${headphone.name}"
+                     th:data-price="${headphone.price}"
+                     onclick="handleSelect(this, 'headphones')">
+                    <img th:if="${headphone.computerImages != null and !headphone.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${headphone.computerImages[0].imageUrl}}"
+                         alt="Headphones Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+                    <h5 th:text="${headphone.name}"></h5>
+                    <p th:text="'Giá: ' + ${headphone.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                    <span th:if="${(headphoneCurrentPage ?: 0) > 0}">
+                        <a th:href="@{|/pc-builder?headphonePage=${(headphoneCurrentPage ?: 0) - 1}&openModal=headphones|}">&laquo; Trước</a>
+                    </span>
+                <span th:each="i : ${#numbers.sequence(0, (headphoneTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (headphoneCurrentPage ?: 0)} ? 'active'">
+                        <a th:href="@{|/pc-builder?headphonePage=${i}&openModal=headphones|}" th:text="${i + 1}"></a>
+                    </span>
+
+                <span th:if="${(headphoneCurrentPage ?: 0) < (headphoneTotalPages ?: 1) - 1}">
+                        <a th:href="@{|/pc-builder?headphonePage=${(headphoneCurrentPage ?: 0) + 1}&openModal=headphones|}">Tiếp &raquo;</a>
+                    </span>
+            </div>
+            <button type="button" onclick="closeModal('headphones')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal chọn Loa -->
+    <div id="speakers-modal" class="component-modal">
+
+        <div class="modal-content">
+            <h4>Chọn Loa máy tính</h4>
+            <div class="search-box" style="margin-bottom: 10px;">
+                <form th:action="@{/pc-builder/search}" method="get">
+                    <input type="text" name="speakerSearch" placeholder="Tìm kiếm Speaker..."
+                           th:value="${speakerSearch}"/>
+                    <input type="hidden" name="openModal" value="speakers"/>
+                    <button type="submit">Tìm</button>
+                </form>
+            </div>
+            <div class="product-list">
+                <div th:each="sp : ${speakers}" class="product-item"
+                     th:data-id="${sp.id}"
+                     th:data-name="${sp.name}"
+                     th:data-price="${sp.price}"
+                     onclick="handleSelect(this, 'speakers')">
+                    <img th:if="${sp.computerImages != null and !sp.computerImages.isEmpty()}"
+                         th:src="@{'/uploads/ComputerDevices/' + ${sp.computerImages[0].imageUrl}}"
+                         alt="Speakers Image"
+                         style="width: 100px; height: auto; margin-bottom: 10px;"/>
+                    <h5 th:text="${sp.name}"></h5>
+                    <p th:text="'Giá: ' + ${sp.price} + ' VND'"></p>
+                </div>
+            </div>
+            <div class="pagination" style="margin-top: 10px; text-align: center;">
+                        <span th:if="${(speakerCurrentPage ?: 0) > 0}">
+                            <a th:href="@{|/pc-builder?speakerPage=${(speakerCurrentPage ?: 0) - 1}&openModal=speakers|}">&laquo; Trước</a>
+                        </span>
+                <span th:each="i : ${#numbers.sequence(0, (speakerTotalPages ?: 1) - 1)}"
+                      th:classappend="${i == (speakerCurrentPage ?: 0)} ? 'active'">
+                            <a th:href="@{|/pc-builder?speakerPage=${i}&openModal=speakers|}" th:text="${i + 1}"></a>
+                        </span>
+
+                <span th:if="${(speakerCurrentPage ?: 0) < (speakerTotalPages ?: 1) - 1}">
+                            <a th:href="@{|/pc-builder?speakerPage=${(speakerCurrentPage ?: 0) + 1}&openModal=speakers|}">Tiếp &raquo;</a>
+                        </span>
+            </div>
+            <button type="button" onclick="closeModal('speakers')">Đóng</button>
+        </div>
+    </div>
+
+
+    <!-- Floating Summary -->
+    <div class="floating-summary" id="floatingSummary">
+        <div class="summary-content">
+            <div class="summary-info">
+                <h3>Cấu hình của bạn</h3>
+                <p><span id="selectedCount">0</span> linh kiện đã chọn</p>
+            </div>
+            <div class="summary-total">
+                <h3>Tổng cộng: <span id="totalPrice" th:text="'VND ' + ${totalPrice}"></span></h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let totalPrice = 0;
+    let selectedCount = 0;
+
+    window.openModal = function (componentType) {
+        console.log("Trying to open modal for:", componentType);
+        const modal = document.getElementById(componentType + '-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    window.closeModal = function (componentType) {
+        const modal = document.getElementById(componentType + '-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    function handleSelect(element, componentType) {
+        const name = element.getAttribute('data-name');
+        const priceStr = element.getAttribute('data-price');
+        const priceNum = parseFloat(priceStr);
+        const id = element.getAttribute('data-id');
+
+        const formattedPrice = priceNum.toLocaleString('vi-VN', {minimumFractionDigits: 0});
+
+        // Cập nhật UI
+        document.getElementById(componentType + '-status').innerText = name;
+        document.getElementById(componentType + '-price').innerText = formattedPrice + ' VND';
+
+        // Cập nhật input hidden
+        const inputElement = document.getElementById('input-' + componentType);
+        if (inputElement) {
+            inputElement.value = id;
+        }
+
+        updateTotalPrice();
+        closeModal(componentType);
+    }
+
+
+    function updateTotalPrice() {
+        totalPrice = 0;
+        selectedCount = 0;
+
+        const components = ['cpu', 'mainboard', 'ram', 'vga', 'hdd', 'ssd', 'psu', 'case', 'cooling', 'monitor', 'keyboard', 'mouse', 'headphones', 'speakers'];
+
+        components.forEach(type => {
+            const priceElement = document.getElementById(type + '-price');
+            if (priceElement && priceElement.textContent.trim() !== '') {
+                let priceText = priceElement.textContent.replace(/[^0-9.]/g, '');
+                priceText = priceText.replace(/\./g, '');  // remove dấu chấm phân cách ngàn
+                const price = parseFloat(priceText);
+                if (!isNaN(price)) {
+                    totalPrice += price;
+                    selectedCount++;
+                }
+            }
+        });
+
+        document.getElementById('totalPrice').innerText = totalPrice.toLocaleString('vi-VN');
+        document.getElementById('selectedCount').innerText = selectedCount;
+
+        const floatingSummary = document.getElementById('floatingSummary');
+        floatingSummary.style.display = selectedCount > 0 ? 'block' : 'none';
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById("pcBuilderForm");
+
+        // Handle button clicks
+        document.querySelectorAll('button[type="submit"][name="action"]').forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                // Create a hidden input for the action if it doesn't exist
+                let actionInput = form.querySelector('input[name="action"]');
+                if (!actionInput) {
+                    actionInput = document.createElement('input');
+                    actionInput.type = 'hidden';
+                    actionInput.name = 'action';
+                    form.appendChild(actionInput);
+                }
+
+                // Set the action value based on which button was clicked
+                actionInput.value = this.value; // 'checkout' or 'update'
+
+                // Log for debugging
+                console.log("Action set to:", this.value);
+
+                // Submit the form
+                form.submit();
+            });
+        });
+    });
+
+    document.getElementById("pcBuilderForm").addEventListener("submit", function () {
+        const fields = ['cpu', 'mainboard', 'ram', 'vga', 'hdd', 'ssd', 'psu', 'case', 'cooling', 'monitor', 'keyboard', 'mouse', 'headphones', 'speakers'];
+        console.log("=== FORM SUBMIT ===");
+        fields.forEach(type => {
+            const value = document.getElementById('input-' + type)?.value;
+            console.log(`${type}Id = ${value}`);
+        });
+
+        const actionInputs = this.querySelectorAll('button[type="submit"][name="action"]');
+        actionInputs.forEach(btn => {
+            console.log("Possible action: ", btn.name, btn.value);
+        });
+    });
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const openModalType = urlParams.get('openModal');
+        if (openModalType) {
+            console.log("Auto-open modal:", openModalType);
+            window.openModal(openModalType); // Gọi lại đúng hàm mở modal
+        }
+    });
+</script>
+
+<script>
+    document.querySelectorAll('.search-box form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            const input = form.querySelector('input[name="openModal"]');
+            if (!input || !input.value) return; // không có openModal thì bỏ qua
+
+            // ép thêm openModal vào URL
+            const params = new URLSearchParams(new FormData(form));
+            params.set("openModal", input.value);
+
+            const action = form.getAttribute('action');
+            const url = action + '?' + params.toString();
+
+            window.location.href = url;
+            e.preventDefault(); // chặn form gốc
+        });
+    });
+</script>
+
+
+</body>
+</html>

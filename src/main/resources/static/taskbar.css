@@ -1,0 +1,563 @@
+/* Modern PC Parts Shop Navigation Bar - Pure CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+}
+
+/* Main Navbar Styling */
+.navbar {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 64px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Logo Styling */
+.navbar .logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: 1rem 2rem;
+    letter-spacing: -0.025em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.navbar .logo:hover {
+    transform: scale(1.05);
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 0;
+    padding-right: 2rem;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links li a {
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 1.25rem 1.5rem;
+    display: block;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    margin: 0 0.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-links li a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 8px;
+}
+
+.nav-links li a:hover::before {
+    opacity: 1;
+}
+
+.nav-links li a:hover {
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Login Button Styling */
+.nav-links li a.btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-links li a.btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.nav-links li a.btn::before {
+    display: none;
+}
+
+/* User Profile Styling */
+/* === DROPDOWN PROFILE === */
+
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dropdown-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.dropdown-trigger:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Avatar (ảnh hoặc chữ cái đầu) */
+.avatar,
+.initial-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.avatar:hover,
+.initial-avatar:hover {
+    transform: scale(1.1);
+}
+
+.initial-avatar {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+}
+
+.dropdown span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: white;
+    margin-right: 6px;
+}
+
+.dropdown span::after {
+    content: " ⌄";
+    font-size: 12px;
+    color: #ccc;
+}
+
+/* === DROPDOWN MENU === */
+.dropdown-content {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    min-width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.dropdown-wrapper:hover .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Menu Items */
+.dropdown-content a,
+.dropdown-content button {
+    display: block;
+    width: 100%;
+    padding: 12px 18px;
+    text-align: left;
+    text-decoration: none;
+    background: none;
+    border: none;
+    color: #374151;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    color: #1e293b;
+    transform: translateX(4px);
+}
+
+/* Logout button */
+.dropdown-content button[type="submit"] {
+    color: #dc2626 !important;
+    border-top: 1px solid #f3f4f6;
+}
+
+.dropdown-content button[type="submit"]:hover {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    color: #b91c1c !important;
+}
+
+/* Dropdown for Categories */
+.dropdown .dropbtn {
+    position: relative;
+}
+
+.dropdown .dropbtn::after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    vertical-align: middle;
+    border-top: 4px solid currentColor;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropbtn::after {
+    transform: rotate(180deg);
+}
+
+/* Mega Menu Styling */
+.mega-dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100vw;
+    background: white;
+    padding: 40px;
+    z-index: 999;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #e5e7eb;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+
+
+.mega-dropdown-content .category-section {
+    padding: 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.mega-dropdown-content .category-section:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.mega-dropdown-content .category-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 8px;
+}
+
+.mega-dropdown-content .category-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mega-dropdown-content .category-items li {
+    margin-bottom: 8px;
+}
+
+.mega-dropdown-content .category-items a {
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: block;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.mega-dropdown-content .category-items a:hover {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    transform: translateX(4px);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 1rem;
+        min-height: auto;
+    }
+
+    .navbar .logo {
+        padding: 0.5rem 0;
+        font-size: 1.5rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+        padding-right: 0;
+        margin-top: 1rem;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-links li a {
+        padding: 1rem;
+        text-align: center;
+        margin: 0;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-link {
+        justify-content: center;
+        margin: 0;
+    }
+
+    .dropdown-content {
+        position: static;
+        display: none;
+        box-shadow: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.2);
+        margin-top: 0.5rem;
+        border-radius: 8px;
+        opacity: 1;
+        transform: none;
+    }
+
+    .dropdown-content a,
+    .dropdown-content button {
+        color: white !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-content a:hover,
+    .dropdown-content button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white !important;
+        transform: none;
+    }
+
+    .user-profile:hover .dropdown-content {
+        display: block;
+    }
+
+    .mega-dropdown-content {
+        position: static;
+        width: 100%;
+        padding: 20px;
+        margin-top: 0.5rem;
+        border-radius: 8px;
+        opacity: 1;
+        transform: none;
+    }
+
+    .dropdown:hover .mega-dropdown-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+/* Smooth scrolling for the entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus states for accessibility */
+.nav-links a:focus,
+.profile-link:focus,
+.dropdown-content a:focus,
+.dropdown-content button:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Loading animation for profile image */
+.user-avatar img {
+    transition: opacity 0.3s ease;
+}
+
+.user-avatar img:not([src]) {
+    opacity: 0;
+}
+
+/* Hover effect for the entire navbar */
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.navbar:hover::before {
+    opacity: 1;
+}
+
+/* Enhanced mega menu with categories */
+.mega-dropdown-content {
+    display: none;
+}
+
+
+
+/* Add some sample categories for the mega menu */
+.dropdown:hover .mega-dropdown-content::after {
+    content: '';
+    display: none;
+}
+
+/* Create the mega menu structure with CSS content */
+.dropdown .mega-dropdown-content::before {
+    content: 'Components\A CPUs & Processors\A Motherboards\A Memory (RAM)\A Graphics Cards\A Storage (SSD/HDD)\A Power Supplies\A CPU Coolers\A Cases\A \A Peripherals\A Gaming Keyboards\A Gaming Mice\A Monitors\A Headsets\A Speakers\A Webcams\A Microphones\A Mouse Pads\A \A Accessories\A Cables & Adapters\A Thermal Paste\A Cable Management\A Tools & Kits\A LED Lighting\A Fans & Cooling\A External Storage\A Networking\A \A Gaming\A Gaming Laptops\A Gaming Desktops\A Gaming Chairs\A Gaming Desks\A VR Headsets\A Game Controllers\A Streaming Equipment\A Gaming Accessories';
+    white-space: pre-line;
+    display: none;
+}
+
+/* Simplified mega menu approach */
+.dropdown {
+    position: relative;
+}
+
+
+.mega-dropdown-content {
+    display: none;
+    color: #374151;
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.mega-dropdown-content::after {
+    content: 'Browse our extensive collection of PC components and accessories:\A\A🖥️ Components: CPUs, Motherboards, RAM, Graphics Cards, Storage, Power Supplies\A⌨️ Peripherals: Keyboards, Mice, Monitors, Headsets, Speakers\A🔧 Accessories: Cables, Cases, Cooling, Tools, LED Lighting\A🎮 Gaming: Laptops, Desktops, Chairs, VR, Controllers, Streaming Equipment';
+    white-space: pre-line;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* ✅ Khi click nút menu, JS sẽ gán class này để hiện mega menu */
+.mega-dropdown-content.show-mega-menu {
+    display: grid !important;
+    opacity: 1;
+    transform: translateY(0);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+/* Submenu bên trong mỗi mục của mega menu */
+.mega-dropdown-content .item {
+    position: relative;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.mega-dropdown-content .item:hover {
+    background: #f1f5f9;
+}
+
+.mega-dropdown-content .item i {
+    margin-right: 8px;
+    color: #3b82f6;
+}
+
+.mega-dropdown-content .submenu {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mega-dropdown-content .submenu-item {
+    color: #475569;
+    text-decoration: none;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.mega-dropdown-content .submenu-item:hover {
+    background: #e0f2fe;
+    color: #0284c7;
+    transform: translateX(4px);
+}

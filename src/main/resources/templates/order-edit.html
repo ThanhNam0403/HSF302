@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa Đơn hàng</title>
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-dark: #283593;
+            --blue: #2469d3;
+            --blue-hover: #174ead;
+            --sidebar-bg: linear-gradient(135deg, #23235a 70%, #5e60ce 100%);
+            --radius: 14px;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f8fc;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 225px;
+            background: var(--sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 38px;
+            box-shadow: 2px 0 18px rgba(44,44,80,0.04);
+        }
+        .sidebar h2 {
+            font-size: 28px;
+            margin: 0 0 46px 32px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            padding: 16px 36px;
+            font-size: 17px;
+            cursor: pointer;
+            border-radius: 8px 0 0 8px;
+            margin-bottom: 6px;
+            transition: background 0.22s, font-weight 0.18s;
+        }
+        .sidebar li.active, .sidebar li:hover {
+            background: #5e60ce;
+            font-weight: 600;
+            box-shadow: 2px 4px 16px 0 rgba(94,96,206,0.07);
+        }
+        .sidebar li a {
+            color: #fff;
+            text-decoration: none;
+            width: 100%;
+            display: block;
+            height: 100%;
+        }
+
+        .content {
+            flex: 1;
+            padding: 44px 54px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 38px;
+        }
+        .brand {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+        }
+        .user-info {
+            font-size: 17px;
+        }
+        .logout-btn {
+            background: #fff;
+            border: 1px solid var(--primary-dark);
+            color: var(--primary-dark);
+            border-radius: 6px;
+            padding: 7px 18px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 10px;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #ecebfa;
+        }
+
+        .form-section {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 14px rgba(60,70,130,0.10);
+            padding: 34px 38px 28px 38px;
+            max-width: 540px;
+            margin: 0 auto;
+            margin-top: 18px;
+        }
+        .form-section h2 {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 28px;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333353;}
+        input, select {
+            width: 100%;
+            padding: 10px 13px;
+            border-radius: 6px;
+            border: 1px solid #d1d5e8;
+            font-size: 16px;
+            background: #f7f9fd;
+        }
+        input:read-only {
+            background: #f2f2fa;
+            color: #888;
+            cursor: not-allowed;
+        }
+        .form-actions {
+            margin-top: 28px;
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+        }
+        .btn-blue {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.18s;
+            font-size: 1rem;
+        }
+        .btn-blue:hover {
+            background: var(--blue-hover);
+        }
+        .btn-cancel {
+            background: #e53935;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s;
+            font-size: 1rem;
+        }
+        .btn-cancel:hover {
+            background: #c62828;
+        }
+        .alert-success {
+            color: #388e3c;
+            background: #e8f5e9;
+            padding: 10px 18px;
+            border-radius: 5px;
+            margin-bottom: 18px;
+            border: 1px solid #81c784;
+            font-size: 15px;
+        }
+        .alert-error {
+            color: #e53935;
+            background: #ffebee;
+            padding: 10px 18px;
+            border-radius: 5px;
+            margin-bottom: 18px;
+            border: 1px solid #ef9a9a;
+            font-size: 15px;
+        }
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .content { padding: 16px 6px;}
+            .form-section { padding: 18px 5px;}
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <div class="sidebar">
+        <h2>SEDO</h2>
+        <ul>
+            <li><a th:href="@{/admin/dashboard}">Bảng điều khiển</a></li>
+            <li><a th:href="@{/admin/computer-devices}">Quản lý Thiết bị Máy tính</a></li>
+            <li class="active">Quản lý Đơn hàng</li>
+            <li><a th:href="@{/admin/users}">Quản lý Người dùng</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="topbar">
+            <div class="brand">Chỉnh sửa Đơn hàng</div>
+            <div class="user-info">
+                Quản trị viên
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="logout-btn">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
+        <div class="form-section">
+            <h2>Chỉnh sửa Đơn hàng</h2>
+            <!-- Thông báo thành công/lỗi -->
+            <div th:if="${success}" class="alert-success">
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert-error">
+                <span th:text="${error}"></span>
+            </div>
+            <form th:action="@{/admin/orders/edit}" method="post" th:object="${order}">
+                <input type="hidden" th:field="*{id}"/>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select th:field="*{status}">
+                        <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Địa chỉ giao hàng</label>
+                    <input th:field="*{shippingAddress}" required />
+                </div>
+                <div class="form-group">
+                    <label>Phương thức thanh toán</label>
+                    <input th:field="*{paymentMethod}" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Khách hàng</label>
+                    <input th:value="${order.customer.fullName}" readonly />
+                </div>
+                <!-- Thêm trường khác nếu muốn -->
+                <div class="form-actions">
+                    <button class="btn-blue" type="submit">Cập nhật</button>
+                    <a th:href="@{/admin/orders}" class="btn-cancel">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

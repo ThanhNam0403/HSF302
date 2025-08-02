@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/taskbar.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+
+<body>
+<nav th:fragment="navbar" class="navbar">
+    <div class="logo">Computer Device Shop</div>
+    <ul class="nav-links">
+        <li><a th:href="@{/SEDO}">Trang chủ</a></li>
+        <li class="dropdown">
+            <a href="#" class="dropbtn" id="menuToggleBtn">Danh Mục</a>
+        </li>
+        <li><a th:href="@{/pc-builder}">Build PC</a></li>
+        <li><a th:href="@{/cart}">Giỏ hàng</a></li>
+
+        <li th:if="${session.user == null}">
+            <a th:href="@{/login}" class="btn">Đăng nhập</a>
+        </li>
+        <div class="dropdown" th:if="${session.user != null}">
+            <div class="dropdown-wrapper">
+                <div class="dropdown-trigger">
+                    <img th:if="${session.user.profileImage != null and !session.user.profileImage.isEmpty()}"
+                         th:src="@{${session.user.profileImage}}"
+                         alt="Avatar"
+                         class="avatar"/>
+
+                    <div th:if="${session.user.profileImage == null or session.user.profileImage.isEmpty()}"
+                         class="avatar initial-avatar"
+                         th:text="${#strings.substring(session.user.fullName, 0, 1)}">
+                    </div>
+
+                    <span th:text="${session.user.fullName}"></span>
+                </div>
+                <div class="dropdown-content">
+                    <a th:href="@{/profile}">Hồ sơ của tôi</a>
+                    <a th:href="@{/orders/history}">Đơn hàng</a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit">Đăng xuất</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+    </ul>
+    <div class="mega-dropdown-content" id="megaMenu">
+        <div class="item">
+            <i class="bi bi-laptop"></i> Laptop
+            <div class="submenu" style="display: flex; flex-direction: column;">
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Laptop', brand='ASUS')}">ASUS</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Laptop', brand='Dell')}">Dell</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Laptop', brand='MSI')}">MSI</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Laptop', brand='Lenovo')}">Lenovo</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Laptop', brand='Acer')}">Acer</a>
+            </div>
+
+        </div>
+        <div class="item">
+            <i class="bi bi-cpu"></i> Main, CPU, VGA
+            <div class="submenu" style="display: flex; flex-direction: column;">
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mainboard', brand='ASUS')}">ASUS</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mainboard', brand='MSI')}">MSI</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mainboard', brand='Gigabyte')}">Gigabyte</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mainboard', brand='ASRock')}">ASRock</a>
+
+                <a class="submenu-item" th:href="@{/products/category-brand(category='CPU', brand='Intel')}">CPU Intel</a>
+
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='Cooler Master')}">Cooler Master</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='Corsair')}">Corsair</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='Antec')}">Antec</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='Seasonic')}">Seasonic</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='Xigmatek')}">Xigmatek</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='FSP')}">FSP</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='Gigabyte')}">Gigabyte</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='PSU', brand='DeepCool')}">DeepCool</a>
+
+                <a class="submenu-item" th:href="@{/products/category-brand(category='VGA', brand='ASUS')}">ASUS</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='VGA', brand='GIGABYTE')}">GIGABYTE</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='VGA', brand='MSI')}">MSI</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='VGA', brand='ZOTAC')}">ZOTAC</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='VGA', brand='INNO3D')}">INNO3D</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='VGA', brand='Palit')}">Palit</a>
+
+            </div>
+        </div>
+        <div class="item">
+            <i class="bi bi-hdd"></i> Ổ cứng, RAM, Thẻ nhớ
+            <div class="submenu" style="display: flex; flex-direction: column;">
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='Samsung')}">Samsung</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='Western Digital')}">Western Digital</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='Kingston')}">Kingston</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='Crucial')}">Crucial</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='ADATA')}">ADATA</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='Lexar')}">Lexar</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='TeamGroup')}">TeamGroup</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='SSD', brand='Gigabyte')}">Gigabyte</a>
+
+                <a class="submenu-item" th:href="@{/products/category-brand(category='HDD', brand='Seagate')}">Ổ cứng HDD</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='HDD', brand='Western Digital')}">Western Digital</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='HDD', brand='Samsung')}">Samsung</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='HDD', brand='Kingston')}">Kingston</a>
+
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='Corsair')}">Corsair</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='Kingston')}">Kingston</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='G.Skill')}">G.Skill</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='ADATA')}">ADATA</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='TeamGroup')}">TeamGroup</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='Patriot')}">Patriot</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='Apacer')}">Apacer</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='RAM', brand='Silicon Power')}">Silicon Power</a>
+
+
+
+            </div>
+        </div>
+        <div class="item">
+            <i class="bi bi-display"></i> Màn hình
+            <div class="submenu" style="display: flex; flex-direction: column;">
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='Samsung')}">Samsung</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='MSI')}">MSI</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='LG')}">LG</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='ASUS')}">ASUS</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='ViewSonic')}">ViewSonic</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='AOC')}">AOC</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='Gigabyte')}">Gigabyte</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Monitor', brand='Dell')}">Dell</a>
+
+                <!-- Thêm các hãng khác nếu có -->
+            </div>
+        </div>
+        <div class="item">
+            <i class="bi bi-keyboard"></i> Bàn phím
+            <div class="submenu" style="display: flex; flex-direction: column;">
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='Logitech')}">Logitech</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='Razer')}">Razer</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='Corsair')}">Corsair</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='DareU')}">DareU</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='Akko')}">Akko</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='Fuhlen')}">Fuhlen</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='Keychron')}">Keychron</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Keyboard', brand='Rapoo')}">Rapoo</a>
+
+
+            </div>
+        </div>
+        <div class="item">
+            <i class="bi bi-mouse"></i> Chuột + Loa
+            <div class="submenu" style="display: flex; flex-direction: column;">
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Speaker', brand='Logitech')}">Logitech</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Speaker', brand='Microlab')}">Microlab</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Speaker', brand='Fenda')}">Fenda</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Speaker', brand='Edifier')}">Edifier</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Speaker', brand='SoundMax')}">SoundMax</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Speaker', brand='Creative')}">Creative</a>
+
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='Fuhlen')}">Fuhlen</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='Logitech')}">Logitech</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='Razer')}">Razer</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='Rapoo')}">Rapoo</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='Corsair')}">Corsair</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='DareU')}">DareU</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='Apple')}">Apple</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Mouse', brand='SteelSeries')}">SteelSeries</a>
+
+            </div>
+        </div>
+        <div class="item">
+            <i class="bi bi-headphones"></i> Tai nghe
+            <div class="submenu">
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='HyperX')}">HyperX</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='Logitech')}">Logitech</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='Razer')}">Razer</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='Corsair')}">Corsair</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='Sony')}">Sony</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='SteelSeries')}">SteelSeries</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='Apple')}">Apple</a>
+                <a class="submenu-item" th:href="@{/products/category-brand(category='Headset', brand='SoundPeats')}">SoundPeats</a>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.getElementById("menuToggleBtn");
+            const megaMenu = document.getElementById("megaMenu");
+
+            if (toggleBtn && megaMenu) {
+                toggleBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    megaMenu.classList.toggle("show-mega-menu");
+                });
+
+                // Ẩn khi click bên ngoài
+                document.addEventListener("click", function (e) {
+                    if (!megaMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                        megaMenu.classList.remove("show-mega-menu");
+                    }
+                });
+            }
+        });
+    </script>
+
+
+</nav>
+
+<!-- ✅ Mega Menu đặt ở ngoài <nav> -->
+
+
+</body>
+
+</html>
